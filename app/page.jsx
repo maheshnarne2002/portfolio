@@ -144,7 +144,7 @@ export default function Home() {
     {
       company: 'Apple',
       role: 'Senior Software Engineer',
-      period: 'July 2024 – January 2026',
+      period: 'July 2024 – Present',
       location: 'United States',
       bullets: [
         'Served as engineering specialist responsible for designing and optimizing high‑performance distributed systems, distilling abstract architecture into concrete design and influencing implementation.',
@@ -274,7 +274,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 md:mb-8"
           >
-            Professional Summary
+            In a Nutshell
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 50 }}
@@ -283,7 +283,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-lg sm:text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-4xl"
           >
-            Senior Software Engineer with 4+ years of experience designing and delivering high‑performance, scalable, and secure distributed systems. Expert in Java, Kotlin, REST APIs, and event‑driven architectures. Proven ability to translate complex requirements into robust software solutions, lead technical initiatives, and mentor engineering teams. Passionate about building reliable, observable systems that solve real‑world problems.
+            Software Engineer with 4+ years of experience designing and delivering high‑performance, scalable, and secure distributed systems. Expert in Java, Kotlin, REST APIs, and event‑driven architectures. Proven ability to translate complex requirements into robust software solutions, lead technical initiatives, and mentor engineering teams. Passionate about building reliable, observable systems that solve real‑world problems.
           </motion.p>
         </div>
       </section>
@@ -297,7 +297,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
           >
-            Professional Experience
+            My Engineering Story
           </motion.h2>
 
           <div className="grid grid-cols-1 gap-6 md:gap-8">
