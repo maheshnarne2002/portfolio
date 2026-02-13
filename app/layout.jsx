@@ -8,7 +8,7 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: 'Ancient × Future | Portfolio',
+  title: 'Mahesh Narne | Portfolio',
   description: 'Bridging ancient techniques with futuristic concepts through modern web development',
 }
 
