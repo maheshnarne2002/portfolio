@@ -344,7 +344,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
           >
-            Key Achievements
+            Outcomes I’m Proud Of
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -373,7 +373,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
           >
-            Technical Skills
+            What’s In My Technical Toolbox
           </motion.h2>
 
           <div className="flex flex-wrap gap-3 justify-center">
