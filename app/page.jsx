@@ -455,7 +455,7 @@ export default function Home() {
             >
               <h3 className="text-2xl font-bold mb-2">Bachelor of Technology in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">GITAM University</p>
-              <p className="text-zinc-400">May 2020 • Andhra Pradesh, India</p>
+              <p className="text-zinc-400">• Andhra Pradesh, India</p>
             </motion.div>
           </div>
         </div>
