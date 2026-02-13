@@ -470,7 +470,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8"
           >
-            Let's Connect
+            Want to Talk?
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 50 }}
@@ -479,7 +479,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-zinc-400 text-lg md:text-xl mb-4"
           >
-            {`narnemaheshbabu11@gmail.com`} • {`+1-913-249-9980`}
+            {`Mail: narnemaheshbabu11@gmail.com`} • {`Phone: +1-913-249-9980`}
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 50 }}
@@ -488,7 +488,7 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="text-zinc-500 text-base md:text-lg mb-8 md:mb-12"
           >
-            Redmond, WA
+            * I Prefer Email *
           </motion.p>
           <motion.a
             href="mailto:narnemaheshbabu11@gmail.com"
@@ -511,7 +511,7 @@ export default function Home() {
           <p className="text-zinc-500 text-sm md:text-base">© 2026 Mahesh Babu Narne</p>
           <div className="flex gap-4 md:gap-6">
             <a
-              href="https://github.com/yourusername"
+              href=""
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
@@ -521,7 +521,7 @@ export default function Home() {
               GitHub
             </a>
             <a
-              href="https://linkedin.com/in/yourusername"
+              href=""
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
