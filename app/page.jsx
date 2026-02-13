@@ -150,12 +150,12 @@ export default function Home() {
         <div className="relative z-10 text-center px-6">
           <motion.div className="hero-text mb-4">
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter">
-              ANCIENT
+              MAHESH BABU
             </h1>
           </motion.div>
           <motion.div className="hero-text mb-8">
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent">
-              × FUTURE
+              × NARNE
             </h1>
           </motion.div>
           <motion.p className="hero-text text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto">
