@@ -249,7 +249,8 @@ export default function Home() {
             </h1>
           </motion.div>
           <motion.p className="hero-text text-zinc-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
-            Senior Software Engineer • Java • Kotlin • Distributed Systems
+            Software Engineer 
+            • Java • Kotlin • Distributed Systems • Rest API's 
           </motion.p>
         </div>
 
@@ -442,7 +443,7 @@ export default function Home() {
             >
               <h3 className="text-2xl font-bold mb-2">Master of Science in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">University of Central Missouri</p>
-              <p className="text-zinc-400">Expected May 2025 • Warrensburg, MO</p>
+              <p className="text-zinc-400"> • Warrensburg, MO</p>
             </motion.div>
 
             <motion.div
