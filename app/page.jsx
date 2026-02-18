@@ -146,32 +146,34 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center pt-16">
-        <div className="text-center px-6">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
-          >
-            MAHESH BABU
-          </motion.h1>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
-          >
-            NARNE
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-zinc-400 text-lg max-w-2xl mx-auto"
-          >
-            Software Engineer • Java • Kotlin • Distributed Systems
-          </motion.p>
+<section id="home" className="min-h-screen flex items-center justify-center pt-16">
+  <div className="text-center px-6">
+    <motion.h1 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
+    >
+      MAHESH BABU
+    </motion.h1>
+    <motion.h1 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
+    >
+      NARNE
+    </motion.h1>
+    <motion.p 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+      className="text-zinc-400 text-lg max-w-2xl mx-auto"
+    >
+      Software Engineer • Java • Kotlin • Distributed Systems
+    </motion.p>
+  </div>
+</section>
           
           {/* Simple scroll indicator */}
           <motion.div 
