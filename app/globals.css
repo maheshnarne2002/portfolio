@@ -20,6 +20,46 @@
 @layer utilities {
   .custom-cursor {
     mix-blend-mode: difference;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .custom-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .custom-cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border: 2px solid white;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    mix-blend-mode: difference;
+    will-change: transform;
+    backface-visibility: hidden;
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+  }
+
+  .cursor-hover .custom-cursor-ring {
+    width: 60px;
+    height: 60px;
+    border-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   @media (max-width: 768px) {
@@ -27,7 +67,8 @@
       cursor: auto;
     }
     
-    .custom-cursor {
+    .custom-cursor-dot,
+    .custom-cursor-ring {
       display: none;
     }
   }
@@ -69,4 +110,58 @@ html.lenis {
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+/* Navbar glassmorphism */
+.glass-nav {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after {
+  transform: translateX(100%);
+}
+
+/* Gradient animations */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #fff, #a0a0a0, #fff, #a0a0a0);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-border {
+  position: relative;
+  border: double 1px transparent;
+  background-image: linear-gradient(black, black), 
+                    linear-gradient(90deg, #fff, #a0a0a0, #fff);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }

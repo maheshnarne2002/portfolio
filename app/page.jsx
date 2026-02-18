@@ -11,8 +11,11 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const containerRef = useRef(null);
   const heroRef = useRef(null);
+  const navbarRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState('default');
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
@@ -23,6 +26,11 @@ export default function Home() {
 
   const heroOpacity = useTransform(smoothProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(smoothProgress, [0, 0.2], [1, 0.8]);
+  const navbarBg = useTransform(
+    smoothProgress,
+    [0, 0.1],
+    ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']
+  );
 
   useEffect(() => {
     // Lenis Smooth Scrolling
@@ -60,6 +68,14 @@ export default function Home() {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
+    // Handle navbar visibility on scroll
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsNavbarVisible(currentScrollY < lastScrollY || currentScrollY < 100);
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+
     // Hero text animation
     gsap.fromTo(
       '.hero-text',
@@ -74,7 +90,7 @@ export default function Home() {
       }
     );
 
-    // Experience cards animation (formerly project cards)
+    // Experience cards animation
     gsap.utils.toArray('.experience-card').forEach((card, i) => {
       gsap.fromTo(
         card,
@@ -133,11 +149,19 @@ export default function Home() {
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
       lenis.destroy();
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       gsap.ticker.remove(raf);
     };
-  }, []);
+  }, [lastScrollY]);
+
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Experience data from resume
   const experiences = [
@@ -153,7 +177,7 @@ export default function Home() {
         'Optimized database performance (PostgreSQL, Cassandra) through schema design, indexing, and query tuning, achieving a 40% reduction in response times.',
         'Led code reviews, established coding standards, and mentored junior engineers on best practices in distributed systems and API design.',
         'Participated in on‑call rotations, performing root cause analysis and resolving production incidents to maintain 99.99% availability.',
-        'Delivered high‑throughput, low‑latency solutions with a focus on scalability, repeatability, and security.'
+        'Delivered high‑throughput, low‑latency solutions with a focus on scalability, repeatability and security.'
       ]
     },
     {
@@ -181,7 +205,7 @@ export default function Home() {
     'Mentored 3 junior engineers who advanced to mid‑level roles through structured guidance and code reviews.'
   ];
 
-  // Skills from resume (all technical skills listed)
+  // Skills from resume
   const skills = [
     'Java (5+ years)', 'Kotlin', 'Python', 'C#', 'SQL',
     'REST', 'Spring Boot', 'GraphQL', 'gRPC', 'Gradle',
@@ -202,21 +226,147 @@ export default function Home() {
     'Certified Kubernetes Administrator (CKA)'
   ];
 
+  const navItems = [
+    { name: 'Home', id: 'home' },
+    { name: 'Experience', id: 'experience' },
+    { name: 'Achievements', id: 'achievements' },
+    { name: 'Skills', id: 'skills' },
+    { name: 'Contact', id: 'contact' }
+  ];
+
   return (
     <div ref={containerRef} className="bg-black text-white overflow-x-hidden">
-      {/* Custom Cursor - Desktop Only */}
+      {/* Enhanced Custom Cursor - Desktop Only */}
       <motion.div
-        className="custom-cursor hidden md:block fixed top-0 left-0 w-8 h-8 border-2 border-white rounded-full pointer-events-none z-50 mix-blend-difference"
+        className="custom-cursor-dot hidden md:block"
         animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: cursorVariant === 'hover' ? 2 : 1
+          x: mousePosition.x - 4,
+          y: mousePosition.y - 4,
         }}
-        transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+        transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
+      />
+      <motion.div
+        className="custom-cursor-ring hidden md:block"
+        animate={{
+          x: mousePosition.x - 20,
+          y: mousePosition.y - 20,
+          scale: cursorVariant === 'hover' ? 1.5 : 1,
+          borderColor: cursorVariant === 'hover' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.5)',
+        }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       />
 
-      {/* Hero Section */}
-      <motion.section
+      {/* Eye-Catching Navbar */}
+      <motion.nav
+        ref={navbarRef}
+        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-transform duration-300 glass-nav"
+        style={{
+          backgroundColor: navbarBg,
+          transform: isNavbarVisible ? 'translateY(0)' : 'translateY(-100%)',
+          backdropFilter: 'blur(10px)',
+        }}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo with gradient */}
+          <motion.div
+            className="text-2xl font-bold cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => scrollToSection('home')}
+            onMouseEnter={() => setCursorVariant('hover')}
+            onMouseLeave={() => setCursorVariant('default')}
+          >
+            <span className="gradient-text">M.N.</span>
+          </motion.div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <motion.button
+                key={item.id}
+                className="nav-link text-sm uppercase tracking-wider font-medium text-zinc-300 hover:text-white transition-colors"
+                onClick={() => scrollToSection(item.id)}
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                {item.name}
+              </motion.button>
+            ))}
+            
+            {/* Resume Button */}
+            <motion.a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gradient-border px-4 py-2 rounded-full text-sm font-medium text-white hover:shadow-lg hover:shadow-white/10 transition-all"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Resume
+            </motion.a>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="md:hidden w-10 h-10 flex items-center justify-center border border-zinc-700 rounded-full"
+            onMouseEnter={() => setCursorVariant('hover')}
+            onMouseLeave={() => setCursorVariant('default')}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </motion.button>
+        </div>
+
+        {/* Mobile Menu Dropdown - Add state management as needed */}
+        <motion.div
+          className="md:hidden absolute top-full left-0 right-0 glass-nav border-t border-zinc-800 py-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+        >
+          <div className="flex flex-col space-y-4 px-6">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                className="text-left text-zinc-300 hover:text-white transition-colors py-2"
+                onClick={() => scrollToSection(item.id)}
+              >
+                {item.name}
+              </button>
+            ))}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-left text-white font-medium py-2 gradient-border inline-block px-4 rounded-full"
+            >
+              Resume
+            </a>
+          </div>
+        </motion.div>
+      </motion.nav>
+
+      {/* Hero Section - Add id for navigation */}
+      <section
+        id="home"
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
         className="relative h-screen flex items-center justify-center overflow-hidden"
@@ -244,13 +394,12 @@ export default function Home() {
             </h1>
           </motion.div>
           <motion.div className="hero-text mb-8">
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter gradient-text">
               NARNE
             </h1>
           </motion.div>
           <motion.p className="hero-text text-zinc-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
-            Software Engineer 
-            • Java • Kotlin • Distributed Systems • Rest API's 
+            Software Engineer • Java • Kotlin • Distributed Systems • REST APIs
           </motion.p>
         </div>
 
@@ -262,9 +411,9 @@ export default function Home() {
         >
           <div className="w-px h-16 bg-gradient-to-b from-white to-transparent" />
         </motion.div>
-      </motion.section>
+      </section>
 
-      {/* Professional Summary Section (replaces About) */}
+      {/* Professional Summary Section */}
       <section className="parallax-section relative min-h-screen flex items-center py-20 md:py-32 px-6" data-depth="0.3">
         <div className="max-w-6xl mx-auto">
           <motion.h2
@@ -288,8 +437,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Experience Section (replaces Projects) */}
-      <section className="relative py-20 md:py-32 px-6">
+      {/* Experience Section */}
+      <section id="experience" className="relative py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -336,7 +485,7 @@ export default function Home() {
       </section>
 
       {/* Key Achievements Section */}
-      <section className="relative py-20 md:py-32 px-6">
+      <section id="achievements" className="relative py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -344,7 +493,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
           >
-            Outcomes I’m Proud Of
+            Outcomes I'm Proud Of
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -365,7 +514,7 @@ export default function Home() {
       </section>
 
       {/* Technical Skills Section */}
-      <section className="parallax-section relative py-20 md:py-32 px-6 bg-zinc-900/50" data-depth="0.2">
+      <section id="skills" className="parallax-section relative py-20 md:py-32 px-6 bg-zinc-900/50" data-depth="0.2">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -373,7 +522,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
           >
-            What’s In My Technical Toolbox
+            What's In My Technical Toolbox
           </motion.h2>
 
           <div className="flex flex-wrap gap-3 justify-center">
@@ -385,6 +534,8 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.02 }}
                 className="px-4 py-2 bg-zinc-800 text-zinc-200 rounded-full text-sm md:text-base border border-zinc-700 hover:border-white transition-colors"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
               >
                 {skill}
               </motion.span>
@@ -414,6 +565,8 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 text-center hover:border-white transition-colors"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
               >
                 <p className="text-white font-medium">{cert}</p>
               </motion.div>
@@ -439,11 +592,13 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800"
+              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800 hover:border-white transition-colors"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
             >
               <h3 className="text-2xl font-bold mb-2">Master of Science in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">University of Central Missouri</p>
-              <p className="text-zinc-400"> • Warrensburg, MO</p>
+              <p className="text-zinc-400">Warrensburg, MO</p>
             </motion.div>
 
             <motion.div
@@ -451,24 +606,26 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800"
+              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800 hover:border-white transition-colors"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
             >
               <h3 className="text-2xl font-bold mb-2">Bachelor of Technology in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">GITAM University</p>
-              <p className="text-zinc-400">• Andhra Pradesh, India</p>
+              <p className="text-zinc-400">Andhra Pradesh, India</p>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 py-20">
+      <section id="contact" className="relative min-h-screen flex items-center justify-center px-6 py-20">
         <div className="text-center">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8 gradient-text"
           >
             Want to Talk?
           </motion.h2>
@@ -479,7 +636,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-zinc-400 text-lg md:text-xl mb-4"
           >
-            {`Mail: narnemaheshbabu11@gmail.com`} • {`Phone: +1-913-249-9980`}
+            narnemaheshbabu11@gmail.com • +1-913-249-9980
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 50 }}
@@ -499,6 +656,8 @@ export default function Home() {
             className="inline-block px-6 md:px-8 py-3 md:py-4 border-2 border-white rounded-full text-base md:text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onMouseEnter={() => setCursorVariant('hover')}
+            onMouseLeave={() => setCursorVariant('default')}
           >
             Get In Touch
           </motion.a>
@@ -510,27 +669,28 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-zinc-500 text-sm md:text-base">© 2026 Mahesh Babu Narne</p>
           <div className="flex gap-4 md:gap-6">
-            <a
-              href=""
+            <motion.a
+              href="https://github.com/maheshnarne"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
+              whileHover={{ y: -2 }}
             >
               GitHub
-            </a>
-            <a
-              href=""
+            </motion.a>
+            <motion.a
+              href="https://linkedin.com/in/maheshnarne"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
+              whileHover={{ y: -2 }}
             >
               LinkedIn
-            </a>
-            {/* Add more social links if desired */}
+            </motion.a>
           </div>
         </div>
       </footer>

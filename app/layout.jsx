@@ -8,8 +8,8 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: 'Mahesh Narne | Portfolio',
-  description: 'Bridging ancient techniques with futuristic concepts through modern web development',
+  title: 'Mahesh Narne | Software Engineer',
+  description: 'Software Engineer specializing in distributed systems, Java, Kotlin, and high-performance architectures.',
 }
 
 export default function RootLayout({ children }) {
