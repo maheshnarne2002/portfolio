@@ -16,6 +16,7 @@ export default function Home() {
   const [cursorVariant, setCursorVariant] = useState('default');
   const [isNavbarVisible, setIsNavbarVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
@@ -29,7 +30,7 @@ export default function Home() {
   const navbarBg = useTransform(
     smoothProgress,
     [0, 0.1],
-    ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']
+    ['rgba(15, 23, 42, 0)', 'rgba(15, 23, 42, 0.9)']
   );
 
   useEffect(() => {
@@ -73,6 +74,11 @@ export default function Home() {
       const currentScrollY = window.scrollY;
       setIsNavbarVisible(currentScrollY < lastScrollY || currentScrollY < 100);
       setLastScrollY(currentScrollY);
+      
+      // Close mobile menu on scroll
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
     };
     window.addEventListener('scroll', handleScroll);
 
@@ -154,12 +160,13 @@ export default function Home() {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       gsap.ticker.remove(raf);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, isMobileMenuOpen]);
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
+      setIsMobileMenuOpen(false);
     }
   };
 
@@ -235,7 +242,14 @@ export default function Home() {
   ];
 
   return (
-    <div ref={containerRef} className="bg-black text-white overflow-x-hidden">
+    <div ref={containerRef} className="gradient-bg text-white overflow-x-hidden">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
+      </div>
+
       {/* Enhanced Custom Cursor - Desktop Only */}
       <motion.div
         className="custom-cursor-dot hidden md:block"
@@ -251,17 +265,15 @@ export default function Home() {
           x: mousePosition.x - 20,
           y: mousePosition.y - 20,
           scale: cursorVariant === 'hover' ? 1.5 : 1,
-          borderColor: cursorVariant === 'hover' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.5)',
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       />
 
-      {/* Eye-Catching Navbar */}
+      {/* Eye-Catching Navbar with Gradient */}
       <motion.nav
         ref={navbarRef}
         className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-transform duration-300 glass-nav"
         style={{
-          backgroundColor: navbarBg,
           transform: isNavbarVisible ? 'translateY(0)' : 'translateY(-100%)',
           backdropFilter: 'blur(10px)',
         }}
@@ -279,7 +291,7 @@ export default function Home() {
             onMouseEnter={() => setCursorVariant('hover')}
             onMouseLeave={() => setCursorVariant('default')}
           >
-            <span className="gradient-text">M.N.</span>
+            <span className="gradient-text">Mahesh Narne</span>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -303,7 +315,7 @@ export default function Home() {
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="gradient-border px-4 py-2 rounded-full text-sm font-medium text-white hover:shadow-lg hover:shadow-white/10 transition-all"
+              className="gradient-border px-4 py-2 rounded-full text-sm font-medium text-white hover:shadow-lg hover:shadow-purple-500/20 transition-all"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
               whileHover={{ scale: 1.05 }}
@@ -315,11 +327,12 @@ export default function Home() {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden w-10 h-10 flex items-center justify-center border border-zinc-700 rounded-full"
+            className="md:hidden w-10 h-10 flex items-center justify-center gradient-border rounded-full"
             onMouseEnter={() => setCursorVariant('hover')}
             onMouseLeave={() => setCursorVariant('default')}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg
               className="w-5 h-5 text-white"
@@ -330,23 +343,28 @@ export default function Home() {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path d="M4 6h16M4 12h16M4 18h16"></path>
+              {isMobileMenuOpen ? (
+                <path d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              )}
             </svg>
           </motion.button>
         </div>
 
-        {/* Mobile Menu Dropdown - Add state management as needed */}
+        {/* Mobile Menu Dropdown */}
         <motion.div
-          className="md:hidden absolute top-full left-0 right-0 glass-nav border-t border-zinc-800 py-4"
+          className="md:hidden absolute top-full left-0 right-0 glass-nav border-t border-purple-500/20 py-4"
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -20 }}
+          transition={{ duration: 0.3 }}
+          style={{ display: isMobileMenuOpen ? 'block' : 'none' }}
         >
           <div className="flex flex-col space-y-4 px-6">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                className="text-left text-zinc-300 hover:text-white transition-colors py-2"
+                className="text-left text-zinc-300 hover:text-white transition-colors py-2 nav-link"
                 onClick={() => scrollToSection(item.id)}
               >
                 {item.name}
@@ -364,21 +382,21 @@ export default function Home() {
         </motion.div>
       </motion.nav>
 
-      {/* Hero Section - Add id for navigation */}
+      {/* Hero Section */}
       <section
         id="home"
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-black to-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-transparent" />
         
         {/* Animated Background Grid */}
         <div className="absolute inset-0 opacity-20">
           {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute h-px bg-white"
+              className="absolute h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent"
               style={{ top: `${i * 5}%`, width: '100%' }}
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
@@ -398,7 +416,7 @@ export default function Home() {
               NARNE
             </h1>
           </motion.div>
-          <motion.p className="hero-text text-zinc-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
+          <motion.p className="hero-text text-zinc-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
             Software Engineer • Java • Kotlin • Distributed Systems • REST APIs
           </motion.p>
         </div>
@@ -409,12 +427,12 @@ export default function Home() {
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
-          <div className="w-px h-16 bg-gradient-to-b from-white to-transparent" />
+          <div className="w-px h-16 bg-gradient-to-b from-purple-500 to-transparent" />
         </motion.div>
       </section>
 
       {/* Professional Summary Section */}
-      <section className="parallax-section relative min-h-screen flex items-center py-20 md:py-32 px-6" data-depth="0.3">
+      <section className="parallax-section relative min-h-screen flex items-center py-20 md:py-32 px-6 section-gradient-2" data-depth="0.3">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -423,14 +441,14 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 md:mb-8"
           >
-            In a Nutshell
+            In a <span className="gradient-text">Nutshell</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-4xl"
+            className="text-lg sm:text-xl md:text-2xl text-zinc-300 leading-relaxed max-w-4xl"
           >
             Software Engineer with 4+ years of experience designing and delivering high‑performance, scalable, and secure distributed systems. Expert in Java, Kotlin, REST APIs, and event‑driven architectures. Proven ability to translate complex requirements into robust software solutions, lead technical initiatives, and mentor engineering teams. Passionate about building reliable, observable systems that solve real‑world problems.
           </motion.p>
@@ -438,7 +456,7 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="relative py-20 md:py-32 px-6">
+      <section id="experience" className="relative py-20 md:py-32 px-6 section-gradient-1">
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -446,24 +464,25 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
           >
-            My Engineering Story
+            My <span className="gradient-text">Engineering Story</span>
           </motion.h2>
 
           <div className="grid grid-cols-1 gap-6 md:gap-8">
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                className="experience-card group relative bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 hover:border-white transition-all duration-500 overflow-hidden cursor-pointer"
+                className="experience-card group relative gradient-card rounded-2xl p-6 md:p-8 border border-purple-500/20 hover:border-purple-500 transition-all duration-500 overflow-hidden cursor-pointer float-animation"
+                style={{ animationDelay: `${index * 0.2}s` }}
                 onMouseEnter={() => setCursorVariant('hover')}
                 onMouseLeave={() => setCursorVariant('default')}
                 whileHover={{ y: -10 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="relative z-10">
                   <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-2">
                     <div>
-                      <h3 className="text-2xl md:text-3xl font-bold mb-1">{exp.role}</h3>
+                      <h3 className="text-2xl md:text-3xl font-bold mb-1 gradient-text">{exp.role}</h3>
                       <p className="text-xl text-zinc-300">{exp.company}</p>
                     </div>
                     <div className="text-right">
@@ -485,7 +504,7 @@ export default function Home() {
       </section>
 
       {/* Key Achievements Section */}
-      <section id="achievements" className="relative py-20 md:py-32 px-6">
+      <section id="achievements" className="relative py-20 md:py-32 px-6 section-gradient-3">
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -493,19 +512,19 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
           >
-            Outcomes I'm Proud Of
+            Outcomes I'm <span className="gradient-text">Proud Of</span>
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {achievements.map((achievement, index) => (
               <motion.div
                 key={index}
-                className="achievement-card group relative bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-800 hover:border-white transition-all duration-500 overflow-hidden"
+                className="achievement-card group relative gradient-card rounded-2xl p-6 md:p-8 border border-purple-500/20 hover:border-purple-500 transition-all duration-500 overflow-hidden"
                 onMouseEnter={() => setCursorVariant('hover')}
                 onMouseLeave={() => setCursorVariant('default')}
                 whileHover={{ y: -5 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <p className="relative z-10 text-zinc-300 text-base md:text-lg leading-relaxed">✓ {achievement}</p>
               </motion.div>
             ))}
@@ -514,7 +533,7 @@ export default function Home() {
       </section>
 
       {/* Technical Skills Section */}
-      <section id="skills" className="parallax-section relative py-20 md:py-32 px-6 bg-zinc-900/50" data-depth="0.2">
+      <section id="skills" className="parallax-section relative py-20 md:py-32 px-6 section-gradient-1" data-depth="0.2">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -522,7 +541,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
           >
-            What's In My Technical Toolbox
+            What's In My <span className="gradient-text">Technical Toolbox</span>
           </motion.h2>
 
           <div className="flex flex-wrap gap-3 justify-center">
@@ -533,7 +552,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.02 }}
-                className="px-4 py-2 bg-zinc-800 text-zinc-200 rounded-full text-sm md:text-base border border-zinc-700 hover:border-white transition-colors"
+                className="px-4 py-2 gradient-card text-zinc-200 rounded-full text-sm md:text-base border border-purple-500/20 hover:border-purple-500 transition-colors"
                 onMouseEnter={() => setCursorVariant('hover')}
                 onMouseLeave={() => setCursorVariant('default')}
               >
@@ -545,7 +564,7 @@ export default function Home() {
       </section>
 
       {/* Certifications Section */}
-      <section className="relative py-20 md:py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6 section-gradient-2">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -553,7 +572,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
           >
-            Certifications
+            <span className="gradient-text">Certifications</span>
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -564,7 +583,8 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-zinc-900 rounded-xl p-6 border border-zinc-800 text-center hover:border-white transition-colors"
+                className="gradient-card rounded-xl p-6 border border-purple-500/20 text-center hover:border-purple-500 transition-colors float-animation"
+                style={{ animationDelay: `${i * 0.2}s` }}
                 onMouseEnter={() => setCursorVariant('hover')}
                 onMouseLeave={() => setCursorVariant('default')}
               >
@@ -576,7 +596,7 @@ export default function Home() {
       </section>
 
       {/* Education Section */}
-      <section className="relative py-20 md:py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6 section-gradient-3">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -584,7 +604,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
           >
-            Education
+            <span className="gradient-text">Education</span>
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -592,11 +612,11 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800 hover:border-white transition-colors"
+              className="gradient-card rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500 transition-colors float-animation"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
             >
-              <h3 className="text-2xl font-bold mb-2">Master of Science in Computer Science</h3>
+              <h3 className="text-2xl font-bold mb-2 gradient-text">Master of Science in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">University of Central Missouri</p>
               <p className="text-zinc-400">Warrensburg, MO</p>
             </motion.div>
@@ -606,11 +626,12 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-zinc-900/50 rounded-2xl p-8 border border-zinc-800 hover:border-white transition-colors"
+              className="gradient-card rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500 transition-colors float-animation"
+              style={{ animationDelay: '0.2s' }}
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
             >
-              <h3 className="text-2xl font-bold mb-2">Bachelor of Technology in Computer Science</h3>
+              <h3 className="text-2xl font-bold mb-2 gradient-text">Bachelor of Technology in Computer Science</h3>
               <p className="text-xl text-zinc-300 mb-1">GITAM University</p>
               <p className="text-zinc-400">Andhra Pradesh, India</p>
             </motion.div>
@@ -619,7 +640,7 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="relative min-h-screen flex items-center justify-center px-6 py-20">
+      <section id="contact" className="relative min-h-screen flex items-center justify-center px-6 py-20 section-gradient-1">
         <div className="text-center">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
@@ -634,7 +655,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-zinc-400 text-lg md:text-xl mb-4"
+            className="text-zinc-300 text-lg md:text-xl mb-4"
           >
             narnemaheshbabu11@gmail.com • +1-913-249-9980
           </motion.p>
@@ -643,7 +664,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-zinc-500 text-base md:text-lg mb-8 md:mb-12"
+            className="text-zinc-400 text-base md:text-lg mb-8 md:mb-12"
           >
             * I Prefer Email *
           </motion.p>
@@ -653,7 +674,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="inline-block px-6 md:px-8 py-3 md:py-4 border-2 border-white rounded-full text-base md:text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300"
+            className="inline-block px-6 md:px-8 py-3 md:py-4 gradient-border rounded-full text-base md:text-lg font-semibold hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onMouseEnter={() => setCursorVariant('hover')}
@@ -665,15 +686,15 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative py-8 md:py-12 px-6 border-t border-zinc-800">
+      <footer className="relative py-8 md:py-12 px-6 border-t border-purple-500/20 gradient-card">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-zinc-500 text-sm md:text-base">© 2026 Mahesh Babu Narne</p>
+          <p className="text-zinc-400 text-sm md:text-base">© 2026 Mahesh Babu Narne</p>
           <div className="flex gap-4 md:gap-6">
             <motion.a
               href="https://github.com/maheshnarne"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
+              className="text-zinc-400 hover:text-white transition-colors text-sm md:text-base"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
               whileHover={{ y: -2 }}
@@ -684,7 +705,7 @@ export default function Home() {
               href="https://linkedin.com/in/maheshnarne"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-white transition-colors text-sm md:text-base"
+              className="text-zinc-400 hover:text-white transition-colors text-sm md:text-base"
               onMouseEnter={() => setCursorVariant('hover')}
               onMouseLeave={() => setCursorVariant('default')}
               whileHover={{ y: -2 }}
