@@ -169,7 +169,8 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-zinc-400 text-lg max-w-2xl mx-auto"
           >
-            Turning complex problems into elegant, scalable solutions • Full‑Stack Engineer • Java • React • Cloud
+            Turning complex problems into elegant, scalable solutions  
+            • Full‑Stack Engineer • Java • React • Cloud
           </motion.p>
         </div>
       </section>
