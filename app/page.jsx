@@ -408,16 +408,16 @@ export default function Home() {
         <div className="relative z-10 text-center px-6">
           <motion.div className="hero-text mb-4">
             <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter">
-              MAHESH BABU
+              MAHESH BABU NARNE
             </h1>
           </motion.div>
           <motion.div className="hero-text mb-8">
             <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter gradient-text">
-              NARNE
+              Site Still Under Construction
             </h1>
           </motion.div>
           <motion.p className="hero-text text-zinc-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
-            Software Engineer • Java • Kotlin • Distributed Systems • REST APIs
+            "Kinda Late to the Portfolio Trend"
           </motion.p>
         </div>
 
