@@ -169,7 +169,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-zinc-400 text-lg max-w-2xl mx-auto"
           >
-            Software Engineer • Java • Kotlin • Distributed Systems
+            Turning complex problems into elegant, scalable solutions • Full‑Stack Engineer • Java • React • Cloud
           </motion.p>
         </div>
       </section>
@@ -179,9 +179,11 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-orange-500">In a Nutshell</h2>
           <p className="text-zinc-300 text-lg leading-relaxed">
-            Software Engineer with 4+ years of experience designing and delivering high‑performance, 
-            scalable distributed systems. Expert in Java, Kotlin, and REST APIs with a proven track 
-            record of leading technical initiatives and mentoring engineering teams.
+             Senior Software Engineer with 4+ years of experience designing and delivering scalable, high‑performance 
+             full‑stack applications and distributed systems. Expert in Java, Spring Boot, Python, C#, and React with 
+             deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of 
+             leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate 
+             about building reliable, observable, and impactful software solutions across the entire technology stack.
           </p>
         </div>
       </section>
