@@ -1,176 +1,38 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from '@studio-freight/lenis';
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const containerRef = useRef(null);
-  const heroRef = useRef(null);
-  const navbarRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [cursorVariant, setCursorVariant] = useState('default');
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  const heroOpacity = useTransform(smoothProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(smoothProgress, [0, 0.2], [1, 0.8]);
-  const navbarBg = useTransform(
-    smoothProgress,
-    [0, 0.1],
-    ['rgba(15, 23, 42, 0)', 'rgba(15, 23, 42, 0.9)']
-  );
+  const [showCursor, setShowCursor] = useState(false);
 
   useEffect(() => {
-    // Lenis Smooth Scrolling
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      mouseMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-    });
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    // Update GSAP ScrollTrigger on Lenis scroll
-    lenis.on('scroll', ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    gsap.ticker.lagSmoothing(0);
-
-    // Mouse move for custom cursor
+    // Simple mouse move for custom cursor (optional)
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Handle navbar visibility on scroll
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsNavbarVisible(currentScrollY < lastScrollY || currentScrollY < 100);
-      setLastScrollY(currentScrollY);
-      
-      // Close mobile menu on scroll
-      if (isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-
-    // Hero text animation
-    gsap.fromTo(
-      '.hero-text',
-      { y: 100, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'power3.out',
-        stagger: 0.2,
-        delay: 0.5
-      }
-    );
-
-    // Experience cards animation
-    gsap.utils.toArray('.experience-card').forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { y: 100, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-    });
-
-    // Achievement cards animation
-    gsap.utils.toArray('.achievement-card').forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { y: 100, opacity: 0, scale: 0.9 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-    });
-
-    // Parallax sections
-    gsap.utils.toArray('.parallax-section').forEach((section) => {
-      const depth = parseFloat(section.dataset.depth) || 0.5;
-      gsap.to(section, {
-        y: () => -section.offsetHeight * depth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1
-        }
-      });
-    });
+    
+    // Only enable custom cursor on desktop
+    if (window.innerWidth > 768) {
+      setShowCursor(true);
+      window.addEventListener('mousemove', handleMouseMove);
+    }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      gsap.ticker.remove(raf);
     };
-  }, [lastScrollY, isMobileMenuOpen]);
+  }, []);
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
     }
   };
 
-  // Experience data from resume
+  // Experience data
   const experiences = [
     {
       company: 'Apple',
@@ -178,13 +40,12 @@ export default function Home() {
       period: 'July 2024 – Present',
       location: 'United States',
       bullets: [
-        'Served as engineering specialist responsible for designing and optimizing high‑performance distributed systems, distilling abstract architecture into concrete design and influencing implementation.',
-        'Architected and implemented RESTful APIs and microservices using Java, Kotlin, and Spring Boot, handling millions of daily requests with sub‑50ms latency.',
-        'Designed event‑driven streaming solutions with Kafka for real‑time data processing and integration across services.',
-        'Optimized database performance (PostgreSQL, Cassandra) through schema design, indexing, and query tuning, achieving a 40% reduction in response times.',
-        'Led code reviews, established coding standards, and mentored junior engineers on best practices in distributed systems and API design.',
-        'Participated in on‑call rotations, performing root cause analysis and resolving production incidents to maintain 99.99% availability.',
-        'Delivered high‑throughput, low‑latency solutions with a focus on scalability, repeatability and security.'
+        'Engineering specialist for high‑performance distributed systems, transforming abstract architecture into concrete designs.',
+        'Architected RESTful APIs and microservices using Java, Kotlin, and Spring Boot handling millions of daily requests.',
+        'Designed event‑driven solutions with Kafka for real‑time data processing across services.',
+        'Optimized database performance achieving 40% reduction in response times.',
+        'Led code reviews and mentored junior engineers on distributed systems best practices.',
+        'Maintained 99.99% availability through on‑call rotations and incident resolution.'
       ]
     },
     {
@@ -193,44 +54,39 @@ export default function Home() {
       period: 'March 2021 – November 2023',
       location: 'Hyderabad, India',
       bullets: [
-        'Designed and built distributed transaction processing systems for enterprise clients using Java, Spring Boot, and event‑driven architectures.',
-        'Developed REST APIs and backend services that scaled to support 100K+ concurrent users, with comprehensive documentation and versioning.',
+        'Built distributed transaction systems using Java, Spring Boot, and event‑driven architectures.',
+        'Developed REST APIs supporting 100K+ concurrent users with comprehensive documentation.',
         'Implemented real‑time data pipelines with Kafka for analytics and monitoring.',
-        'Containerized applications with Docker and automated CI/CD pipelines, reducing deployment time by 70%.',
-        'Collaborated with product managers and cross‑functional teams to refine requirements and deliver features on schedule.',
-        'Conducted performance profiling and tuning, optimizing critical code paths to lower latency and increase throughput.'
+        'Reduced deployment time by 70% through Docker and CI/CD automation.',
+        'Collaborated with cross-functional teams to deliver features on schedule.',
+        'Optimized code paths to lower latency and increase throughput.'
       ]
     }
   ];
 
-  // Achievements from resume
+  // Achievements
   const achievements = [
-    'Architected and deployed a high‑throughput transaction processing platform that scaled to 200K+ transactions/sec with 99.99% availability and sub‑50ms p99 latency.',
-    'Optimized PostgreSQL queries and introduced caching, improving API response times by 65%.',
-    'Reduced incident response time by 60% through implementation of comprehensive monitoring, log aggregation, and automated alerting.',
-    'Established engineering best practices and design patterns adopted across multiple teams, improving code quality and consistency.',
-    'Mentored 3 junior engineers who advanced to mid‑level roles through structured guidance and code reviews.'
+    'Architected platform handling 200K+ transactions/sec with 99.99% availability and sub‑50ms latency',
+    'Improved API response times by 65% through query optimization and caching',
+    'Reduced incident response time by 60% with comprehensive monitoring and alerting',
+    'Established engineering best practices adopted across multiple teams',
+    'Mentored 3 junior engineers to mid‑level roles'
   ];
 
-  // Skills from resume
+  // Skills
   const skills = [
-    'Java (5+ years)', 'Kotlin', 'Python', 'C#', 'SQL',
-    'REST', 'Spring Boot', 'GraphQL', 'gRPC', 'Gradle',
-    'PostgreSQL', 'Cassandra', 'NoSQL', 'Database Design', 'Query Optimization',
-    'Kafka', 'Event‑Driven Architecture', 'Stream Processing',
-    'Docker', 'Kubernetes', 'Jenkins', 'GitHub Actions', 'CI/CD Pipelines',
-    'Grafana', 'Prometheus', 'ELK Stack', 'Distributed Tracing',
-    'High‑Throughput Systems', 'Low‑Latency Design', 'Microservices', 'Fault Tolerance',
-    'Agile/Scrum', 'Code Reviews', 'TDD', 'Design Patterns',
-    'Root Cause Analysis', 'Performance Tuning', 'Incident Management'
+    'Java', 'Kotlin', 'Python', 'SQL',
+    'Spring Boot', 'REST APIs', 'GraphQL',
+    'PostgreSQL', 'Cassandra', 'Kafka',
+    'Docker', 'Kubernetes', 'AWS',
+    'Microservices', 'System Design', 'CI/CD'
   ];
 
-  // Certifications from resume
+  // Certifications
   const certifications = [
-    'Oracle Certified Professional: Java SE 11 Developer',
-    'Confluent Certified Developer for Apache Kafka',
-    'AWS Certified Solutions Architect – Associate',
-    'Certified Kubernetes Administrator (CKA)'
+    'Oracle Certified Professional: Java SE 11',
+    'AWS Certified Solutions Architect',
+    'Certified Kubernetes Administrator'
   ];
 
   const navItems = [
@@ -242,476 +98,240 @@ export default function Home() {
   ];
 
   return (
-    <div ref={containerRef} className="gradient-bg text-white overflow-x-hidden">
-      {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
+    <div ref={containerRef} className="bg-zinc-900 text-zinc-100 min-h-screen">
+      
+      {/* Simple Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <button
+              onClick={() => scrollToSection('home')}
+              className="text-xl font-bold text-orange-500 hover:text-orange-400 transition-colors"
+            >
+              MN
+            </button>
 
-      {/* Enhanced Custom Cursor - Desktop Only */}
-      <motion.div
-        className="custom-cursor-dot hidden md:block"
-        animate={{
-          x: mousePosition.x - 4,
-          y: mousePosition.y - 4,
-        }}
-        transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
-      />
-      <motion.div
-        className="custom-cursor-ring hidden md:block"
-        animate={{
-          x: mousePosition.x - 20,
-          y: mousePosition.y - 20,
-          scale: cursorVariant === 'hover' ? 1.5 : 1,
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      />
-
-      {/* Eye-Catching Navbar with Gradient */}
-      <motion.nav
-        ref={navbarRef}
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-transform duration-300 glass-nav"
-        style={{
-          transform: isNavbarVisible ? 'translateY(0)' : 'translateY(-100%)',
-          backdropFilter: 'blur(10px)',
-        }}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo with gradient */}
-          <motion.div
-            className="text-2xl font-bold cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection('home')}
-            onMouseEnter={() => setCursorVariant('hover')}
-            onMouseLeave={() => setCursorVariant('default')}
-          >
-            <span className="gradient-text">Mahesh Narne</span>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <motion.button
-                key={item.id}
-                className="nav-link text-sm uppercase tracking-wider font-medium text-zinc-300 hover:text-white transition-colors"
-                onClick={() => scrollToSection(item.id)}
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-zinc-400 hover:text-orange-500 transition-colors text-sm uppercase tracking-wider"
+                >
+                  {item.name}
+                </button>
+              ))}
+              
+              {/* Resume Button */}
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 border border-orange-500 text-orange-500 rounded hover:bg-orange-500 hover:text-white transition-colors text-sm"
               >
-                {item.name}
-              </motion.button>
-            ))}
-            
-            {/* Resume Button */}
-            <motion.a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gradient-border px-4 py-2 rounded-full text-sm font-medium text-white hover:shadow-lg hover:shadow-purple-500/20 transition-all"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Resume
-            </motion.a>
-          </div>
+                Resume
+              </a>
+            </div>
 
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden w-10 h-10 flex items-center justify-center gradient-border rounded-full"
-            onMouseEnter={() => setCursorVariant('hover')}
-            onMouseLeave={() => setCursorVariant('default')}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMobileMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </motion.button>
+            {/* Mobile Menu Button - Simple */}
+            <button className="md:hidden text-zinc-400 hover:text-orange-500">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
-
-        {/* Mobile Menu Dropdown */}
-        <motion.div
-          className="md:hidden absolute top-full left-0 right-0 glass-nav border-t border-purple-500/20 py-4"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -20 }}
-          transition={{ duration: 0.3 }}
-          style={{ display: isMobileMenuOpen ? 'block' : 'none' }}
-        >
-          <div className="flex flex-col space-y-4 px-6">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                className="text-left text-zinc-300 hover:text-white transition-colors py-2 nav-link"
-                onClick={() => scrollToSection(item.id)}
-              >
-                {item.name}
-              </button>
-            ))}
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-left text-white font-medium py-2 gradient-border inline-block px-4 rounded-full"
-            >
-              Resume
-            </a>
-          </div>
-        </motion.div>
-      </motion.nav>
+      </nav>
 
       {/* Hero Section */}
-      <section
-        id="home"
-        ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-transparent" />
-        
-        {/* Animated Background Grid */}
-        <div className="absolute inset-0 opacity-20">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent"
-              style={{ top: `${i * 5}%`, width: '100%' }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 1.5, delay: i * 0.05 }}
-            />
-          ))}
-        </div>
-
-        <div className="relative z-10 text-center px-6">
-          <motion.div className="hero-text mb-4">
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter">
-              MAHESH BABU NARNE
-            </h1>
-          </motion.div>
-          <motion.div className="hero-text mb-8">
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter gradient-text">
-              Site Still Under Construction
-            </h1>
-          </motion.div>
-          <motion.p className="hero-text text-zinc-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
-            "Kinda Late to the Portfolio Trend"
+      <section id="home" className="min-h-screen flex items-center justify-center pt-16">
+        <div className="text-center px-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
+          >
+            MAHESH BABU
+          </motion.h1>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
+          >
+            NARNE
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-zinc-400 text-lg max-w-2xl mx-auto"
+          >
+            Software Engineer • Java • Kotlin • Distributed Systems
           </motion.p>
+          
+          {/* Simple scroll indicator */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          >
+            <div className="w-6 h-10 border-2 border-zinc-700 rounded-full flex justify-center">
+              <div className="w-1 h-2 bg-orange-500 rounded-full mt-2 animate-bounce" />
+            </div>
+          </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          <div className="w-px h-16 bg-gradient-to-b from-purple-500 to-transparent" />
-        </motion.div>
       </section>
 
-      {/* Professional Summary Section */}
-      <section className="parallax-section relative min-h-screen flex items-center py-20 md:py-32 px-6 section-gradient-2" data-depth="0.3">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 md:mb-8"
-          >
-            In a <span className="gradient-text">Nutshell</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-zinc-300 leading-relaxed max-w-4xl"
-          >
-            Software Engineer with 4+ years of experience designing and delivering high‑performance, scalable, and secure distributed systems. Expert in Java, Kotlin, REST APIs, and event‑driven architectures. Proven ability to translate complex requirements into robust software solutions, lead technical initiatives, and mentor engineering teams. Passionate about building reliable, observable systems that solve real‑world problems.
-          </motion.p>
+      {/* Professional Summary */}
+      <section className="py-20 px-6 border-t border-zinc-800">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-orange-500">In a Nutshell</h2>
+          <p className="text-zinc-300 text-lg leading-relaxed">
+            Software Engineer with 4+ years of experience designing and delivering high‑performance, 
+            scalable distributed systems. Expert in Java, Kotlin, and REST APIs with a proven track 
+            record of leading technical initiatives and mentoring engineering teams.
+          </p>
         </div>
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="relative py-20 md:py-32 px-6 section-gradient-1">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
-          >
-            My <span className="gradient-text">Engineering Story</span>
-          </motion.h2>
+      <section id="experience" className="py-20 px-6 bg-zinc-800/30">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center">
+            Experience
+          </h2>
 
-          <div className="grid grid-cols-1 gap-6 md:gap-8">
+          <div className="space-y-8">
             {experiences.map((exp, index) => (
-              <motion.div
-                key={index}
-                className="experience-card group relative gradient-card rounded-2xl p-6 md:p-8 border border-purple-500/20 hover:border-purple-500 transition-all duration-500 overflow-hidden cursor-pointer float-animation"
-                style={{ animationDelay: `${index * 0.2}s` }}
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
-                whileHover={{ y: -10 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <div className="relative z-10">
-                  <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-2">
-                    <div>
-                      <h3 className="text-2xl md:text-3xl font-bold mb-1 gradient-text">{exp.role}</h3>
-                      <p className="text-xl text-zinc-300">{exp.company}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-zinc-400">{exp.period}</p>
-                      <p className="text-zinc-500 text-sm">{exp.location}</p>
-                    </div>
+              <div key={index} className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all">
+                <div className="flex flex-col md:flex-row justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold">{exp.role}</h3>
+                    <p className="text-orange-500">{exp.company}</p>
                   </div>
-
-                  <ul className="list-disc pl-5 space-y-2 text-zinc-400">
-                    {exp.bullets.map((bullet, i) => (
-                      <li key={i} className="text-sm md:text-base leading-relaxed">{bullet}</li>
-                    ))}
-                  </ul>
+                  <div className="text-zinc-400 text-sm mt-2 md:mt-0">
+                    <p>{exp.period}</p>
+                    <p>{exp.location}</p>
+                  </div>
                 </div>
-              </motion.div>
+                <ul className="list-disc pl-5 space-y-2 text-zinc-400">
+                  {exp.bullets.map((bullet, i) => (
+                    <li key={i} className="text-sm">{bullet}</li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Key Achievements Section */}
-      <section id="achievements" className="relative py-20 md:py-32 px-6 section-gradient-3">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-20 text-center"
-          >
-            Outcomes I'm <span className="gradient-text">Proud Of</span>
-          </motion.h2>
+      {/* Achievements Section */}
+      <section id="achievements" className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center">
+            Key Achievements
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {achievements.map((achievement, index) => (
-              <motion.div
-                key={index}
-                className="achievement-card group relative gradient-card rounded-2xl p-6 md:p-8 border border-purple-500/20 hover:border-purple-500 transition-all duration-500 overflow-hidden"
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
-                whileHover={{ y: -5 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <p className="relative z-10 text-zinc-300 text-base md:text-lg leading-relaxed">✓ {achievement}</p>
-              </motion.div>
+              <div key={index} className="bg-zinc-800 rounded-lg p-6 border border-zinc-700">
+                <p className="text-zinc-300">✓ {achievement}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Technical Skills Section */}
-      <section id="skills" className="parallax-section relative py-20 md:py-32 px-6 section-gradient-1" data-depth="0.2">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
-          >
-            What's In My <span className="gradient-text">Technical Toolbox</span>
-          </motion.h2>
+      {/* Skills Section */}
+      <section id="skills" className="py-20 px-6 bg-zinc-800/30">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center">
+            Technical Skills
+          </h2>
 
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             {skills.map((skill, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.02 }}
-                className="px-4 py-2 gradient-card text-zinc-200 rounded-full text-sm md:text-base border border-purple-500/20 hover:border-purple-500 transition-colors"
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
-              >
+              <span key={i} className="px-4 py-2 bg-zinc-800 rounded-full text-zinc-300 border border-zinc-700">
                 {skill}
-              </motion.span>
+              </span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Certifications Section */}
-      <section className="relative py-20 md:py-32 px-6 section-gradient-2">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
-          >
-            <span className="gradient-text">Certifications</span>
-          </motion.h2>
+      {/* Certifications */}
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center">
+            Certifications
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {certifications.map((cert, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="gradient-card rounded-xl p-6 border border-purple-500/20 text-center hover:border-purple-500 transition-colors float-animation"
-                style={{ animationDelay: `${i * 0.2}s` }}
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
-              >
-                <p className="text-white font-medium">{cert}</p>
-              </motion.div>
+              <div key={i} className="bg-zinc-800 rounded-lg p-6 text-center border border-zinc-700">
+                <p className="text-zinc-300">{cert}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Education Section */}
-      <section className="relative py-20 md:py-32 px-6 section-gradient-3">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-12 md:mb-16 text-center"
-          >
-            <span className="gradient-text">Education</span>
-          </motion.h2>
+      {/* Education */}
+      <section className="py-20 px-6 bg-zinc-800/30">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center">
+            Education
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="gradient-card rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500 transition-colors float-animation"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
-            >
-              <h3 className="text-2xl font-bold mb-2 gradient-text">Master of Science in Computer Science</h3>
-              <p className="text-xl text-zinc-300 mb-1">University of Central Missouri</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-zinc-800 rounded-lg p-6">
+              <h3 className="text-xl font-bold mb-2">Master of Science</h3>
+              <p className="text-orange-500 mb-1">University of Central Missouri</p>
               <p className="text-zinc-400">Warrensburg, MO</p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="gradient-card rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500 transition-colors float-animation"
-              style={{ animationDelay: '0.2s' }}
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
-            >
-              <h3 className="text-2xl font-bold mb-2 gradient-text">Bachelor of Technology in Computer Science</h3>
-              <p className="text-xl text-zinc-300 mb-1">GITAM University</p>
+            <div className="bg-zinc-800 rounded-lg p-6">
+              <h3 className="text-xl font-bold mb-2">Bachelor of Technology</h3>
+              <p className="text-orange-500 mb-1">GITAM University</p>
               <p className="text-zinc-400">Andhra Pradesh, India</p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="relative min-h-screen flex items-center justify-center px-6 py-20 section-gradient-1">
-        <div className="text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-6 md:mb-8 gradient-text"
-          >
-            Want to Talk?
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-zinc-300 text-lg md:text-xl mb-4"
-          >
-            narnemaheshbabu11@gmail.com • +1-913-249-9980
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="text-zinc-400 text-base md:text-lg mb-8 md:mb-12"
-          >
-            * I Prefer Email *
-          </motion.p>
-          <motion.a
+      <section id="contact" className="min-h-screen flex items-center justify-center px-6 py-20">
+        <div className="text-center max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-orange-500">
+            Get in Touch
+          </h2>
+          <p className="text-zinc-400 text-lg mb-4">
+            narnemaheshbabu11@gmail.com
+          </p>
+          <p className="text-zinc-500 mb-8">
+            +1-913-249-9980
+          </p>
+          <a
             href="mailto:narnemaheshbabu11@gmail.com"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="inline-block px-6 md:px-8 py-3 md:py-4 gradient-border rounded-full text-base md:text-lg font-semibold hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onMouseEnter={() => setCursorVariant('hover')}
-            onMouseLeave={() => setCursorVariant('default')}
+            className="inline-block px-8 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
           >
-            Get In Touch
-          </motion.a>
+            Send Email
+          </a>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative py-8 md:py-12 px-6 border-t border-purple-500/20 gradient-card">
+      <footer className="py-8 px-6 border-t border-zinc-800">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-zinc-400 text-sm md:text-base">© 2026 Mahesh Babu Narne</p>
-          <div className="flex gap-4 md:gap-6">
-            <motion.a
-              href="https://github.com/maheshnarne"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors text-sm md:text-base"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
-              whileHover={{ y: -2 }}
-            >
-              GitHub
-            </motion.a>
-            <motion.a
-              href="https://linkedin.com/in/maheshnarne"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-white transition-colors text-sm md:text-base"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
-              whileHover={{ y: -2 }}
-            >
-              LinkedIn
-            </motion.a>
+          <p className="text-zinc-500">© 2026 Mahesh Babu Narne</p>
+          <div className="flex gap-6">
+            <a href="#" className="text-zinc-500 hover:text-orange-500 transition-colors">GitHub</a>
+            <a href="#" className="text-zinc-500 hover:text-orange-500 transition-colors">LinkedIn</a>
           </div>
         </div>
       </footer>
