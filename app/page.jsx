@@ -99,7 +99,6 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="bg-zinc-900 text-zinc-100 min-h-screen">
-      
       {/* Simple Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -146,46 +145,32 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-<section id="home" className="min-h-screen flex items-center justify-center pt-16">
-  <div className="text-center px-6">
-    <motion.h1 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
-    >
-      MAHESH BABU
-    </motion.h1>
-    <motion.h1 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
-    >
-      NARNE
-    </motion.h1>
-    <motion.p 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-      className="text-zinc-400 text-lg max-w-2xl mx-auto"
-    >
-      Software Engineer • Java • Kotlin • Distributed Systems
-    </motion.p>
-  </div>
-</section>
-          
-          {/* Simple scroll indicator */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+      <section id="home" className="min-h-screen flex items-center justify-center pt-16">
+        <div className="text-center px-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
           >
-            <div className="w-6 h-10 border-2 border-zinc-700 rounded-full flex justify-center">
-              <div className="w-1 h-2 bg-orange-500 rounded-full mt-2 animate-bounce" />
-            </div>
-          </motion.div>
+            MAHESH BABU
+          </motion.h1>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
+          >
+            NARNE
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-zinc-400 text-lg max-w-2xl mx-auto"
+          >
+            Software Engineer • Java • Kotlin • Distributed Systems
+          </motion.p>
         </div>
       </section>
 
