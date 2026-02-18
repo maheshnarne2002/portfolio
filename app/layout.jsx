@@ -6,10 +6,6 @@ import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Mahesh Narne | Portfolio",
-  description: "Backend Engineer specializing in distributed systems and APIs",
-};
 
 export default function RootLayout({ children }) {
   return (
