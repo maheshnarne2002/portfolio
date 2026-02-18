@@ -170,7 +170,8 @@ export default function Home() {
             className="text-zinc-400 text-lg max-w-2xl mx-auto"
           >
             Turning complex problems into elegant, scalable solutions  
-            • Full‑Stack Engineer • Java • React • Cloud
+            <br />
+            <span className="text-orange-500/80">Full-Stack Engineer • Java • React • Cloud</span>
           </motion.p>
         </div>
       </section>
