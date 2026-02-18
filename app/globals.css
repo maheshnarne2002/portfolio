@@ -17,21 +17,52 @@
 }
 
 @layer utilities {
-  /* Simple custom cursor - optional, can be removed if not wanted */
-  .custom-cursor {
-    width: 20px;
-    height: 20px;
-    background: white;
+  /* Trailing Cursor Styles */
+  .cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: #f97316;
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
     z-index: 9999;
-    mix-blend-mode: difference;
-    transition: transform 0.1s ease;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+    box-shadow: 0 0 20px #f97316;
+  }
+
+  .cursor-dot.hover {
+    width: 16px;
+    height: 16px;
+    background: white;
+    box-shadow: 0 0 30px white;
+  }
+
+  .trailing-cursor {
+    width: 40px;
+    height: 40px;
+    background: rgba(249, 115, 22, 0.15);
+    border: 2px solid #f97316;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+  }
+
+  .trailing-cursor.hover {
+    width: 60px;
+    height: 60px;
+    background: rgba(249, 115, 22, 0.25);
+    border-color: white;
+    backdrop-filter: blur(4px);
   }
 
   @media (max-width: 768px) {
-    .custom-cursor {
+    .cursor-dot,
+    .trailing-cursor {
       display: none;
     }
   }
@@ -43,7 +74,7 @@
   color: white;
 }
 
-/* Simple scrollbar - optional */
+/* Simple scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -80,7 +111,7 @@
   transform: translateY(-4px);
 }
 
-/* Simple border accent */
+/* Border accent */
 .border-accent {
   border-color: #f97316;
 }

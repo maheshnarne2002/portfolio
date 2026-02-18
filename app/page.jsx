@@ -6,12 +6,63 @@ import { motion } from 'framer-motion';
 export default function Home() {
   const containerRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [trailPosition, setTrailPosition] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
+  const [cursorHover, setCursorHover] = useState(false);
+  
+  // Typing animation states
+  const [displayFirstName, setDisplayFirstName] = useState('');
+  const [displayLastName, setDisplayLastName] = useState('');
+  const [firstNameComplete, setFirstNameComplete] = useState(false);
+  const [showCursor1, setShowCursor1] = useState(true);
+  const [showCursor2, setShowCursor2] = useState(false);
+
+  const fullFirstName = 'MAHESH BABU';
+  const fullLastName = 'NARNE';
 
   useEffect(() => {
-    // Simple mouse move for custom cursor (optional)
+    // Typing animation for first name
+    let i = 0;
+    const typeFirstName = setInterval(() => {
+      if (i < fullFirstName.length) {
+        setDisplayFirstName(fullFirstName.substring(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typeFirstName);
+        setFirstNameComplete(true);
+        setShowCursor1(false);
+        setShowCursor2(true);
+        
+        // Start typing last name after a short delay
+        setTimeout(() => {
+          let j = 0;
+          const typeLastName = setInterval(() => {
+            if (j < fullLastName.length) {
+              setDisplayLastName(fullLastName.substring(0, j + 1));
+              j++;
+            } else {
+              clearInterval(typeLastName);
+              setShowCursor2(false);
+            }
+          }, 100);
+        }, 500);
+      }
+    }, 150);
+
+    return () => {
+      clearInterval(typeFirstName);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Mouse move for custom cursor with trail
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Create trail effect with delay
+      setTimeout(() => {
+        setTrailPosition({ x: e.clientX, y: e.clientY });
+      }, 50);
     };
     
     // Only enable custom cursor on desktop
@@ -136,6 +187,32 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="bg-zinc-900 text-zinc-100 min-h-screen">
+      
+      {/* Custom Trailing Cursor */}
+      {showCursor && (
+        <>
+          {/* Main cursor dot */}
+          <motion.div 
+            className={`cursor-dot ${cursorHover ? 'hover' : ''}`}
+            animate={{
+              x: mousePosition.x - 4,
+              y: mousePosition.y - 4,
+            }}
+            transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
+          />
+          
+          {/* Trailing cursor effect */}
+          <motion.div 
+            className={`trailing-cursor ${cursorHover ? 'hover' : ''}`}
+            animate={{
+              x: trailPosition.x - 20,
+              y: trailPosition.y - 20,
+            }}
+            transition={{ type: 'spring', stiffness: 200, damping: 30 }}
+          />
+        </>
+      )}
+
       {/* Simple Navbar with animation */}
       <motion.nav 
         initial={{ y: -100 }}
@@ -150,6 +227,8 @@ export default function Home() {
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scrollToSection('home')}
+              onMouseEnter={() => setCursorHover(true)}
+              onMouseLeave={() => setCursorHover(false)}
               className="text-xl font-bold text-orange-500 hover:text-orange-400 transition-colors"
             >
               MN
@@ -163,6 +242,8 @@ export default function Home() {
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                   onClick={() => scrollToSection(item.id)}
+                  onMouseEnter={() => setCursorHover(true)}
+                  onMouseLeave={() => setCursorHover(false)}
                   className="text-zinc-400 hover:text-orange-500 transition-colors text-sm uppercase tracking-wider"
                 >
                   {item.name}
@@ -176,6 +257,8 @@ export default function Home() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 animate={{ 
                   boxShadow: ['0 0 0 0 rgba(249, 115, 22, 0.4)', '0 0 0 10px rgba(249, 115, 22, 0)']
                 }}
@@ -190,6 +273,8 @@ export default function Home() {
             <motion.button 
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              onMouseEnter={() => setCursorHover(true)}
+              onMouseLeave={() => setCursorHover(false)}
               className="md:hidden text-zinc-400 hover:text-orange-500"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +285,7 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Hero Section with animated background */}
+      {/* Hero Section with typing animation */}
       <section id="home" className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
         {/* Animated background circles */}
         <motion.div 
@@ -228,26 +313,44 @@ export default function Home() {
         </motion.div>
 
         <div className="text-center px-6 relative z-10">
-          <motion.h1 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, type: "spring" }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4"
-          >
-            MAHESH BABU
-          </motion.h1>
-          <motion.h1 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-            className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 text-orange-500"
-          >
-            NARNE
-          </motion.h1>
+          {/* First name with typing animation */}
+          <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 flex items-center justify-center">
+            <span className="relative">
+              {displayFirstName}
+              {showCursor1 && (
+                <motion.span
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="absolute -right-4 top-0 text-orange-500"
+                >
+                  |
+                </motion.span>
+              )}
+            </span>
+          </div>
+
+          {/* Last name with typing animation */}
+          <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 flex items-center justify-center">
+            <span className="relative">
+              <span className={firstNameComplete ? 'text-orange-500' : 'text-white'}>
+                {displayLastName}
+              </span>
+              {showCursor2 && (
+                <motion.span
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="absolute -right-4 top-0 text-orange-500"
+                >
+                  |
+                </motion.span>
+              )}
+            </span>
+          </div>
+
           <motion.p 
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 2.5 }}
             className="text-zinc-400 text-lg max-w-3xl mx-auto px-4"
           >
             <motion.span
@@ -270,7 +373,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Summary with fade in */}
+      {/* Professional Summary */}
       <motion.section 
         initial="initial"
         whileInView="animate"
@@ -298,7 +401,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Experience Section with staggered cards */}
+      {/* Experience Section */}
       <motion.section 
         id="experience" 
         initial="initial"
@@ -321,6 +424,8 @@ export default function Home() {
                 key={index}
                 variants={fadeInUp}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all cursor-pointer"
               >
                 <div className="flex flex-col md:flex-row justify-between items-start mb-4">
@@ -358,7 +463,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Achievements Section with staggered cards */}
+      {/* Achievements Section */}
       <motion.section 
         id="achievements" 
         initial="initial"
@@ -381,6 +486,8 @@ export default function Home() {
                 key={index}
                 variants={fadeInUp}
                 whileHover={{ scale: 1.02, x: 5 }}
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 className="bg-zinc-800 rounded-lg p-6 border border-zinc-700 hover:border-orange-500 transition-all cursor-pointer"
               >
                 <motion.p 
@@ -396,7 +503,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Skills Section with floating tags */}
+      {/* Skills Section */}
       <motion.section 
         id="skills" 
         initial="initial"
@@ -420,6 +527,8 @@ export default function Home() {
               <motion.span
                 key={i}
                 variants={fadeInUp}
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 whileHover={{ 
                   scale: 1.1,
                   backgroundColor: '#f97316',
@@ -456,6 +565,8 @@ export default function Home() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 whileHover={{ 
                   scale: 1.05,
                   rotateY: 5,
@@ -490,7 +601,9 @@ export default function Home() {
             <motion.div
               variants={fadeInUp}
               whileHover={{ scale: 1.02 }}
-              className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all"
+              onMouseEnter={() => setCursorHover(true)}
+              onMouseLeave={() => setCursorHover(false)}
+              className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all cursor-pointer"
             >
               <h3 className="text-xl font-bold mb-2">Master of Science</h3>
               <p className="text-orange-500 mb-1">University of Central Missouri</p>
@@ -500,7 +613,9 @@ export default function Home() {
             <motion.div
               variants={fadeInUp}
               whileHover={{ scale: 1.02 }}
-              className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all"
+              onMouseEnter={() => setCursorHover(true)}
+              onMouseLeave={() => setCursorHover(false)}
+              className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all cursor-pointer"
             >
               <h3 className="text-xl font-bold mb-2">Bachelor of Technology</h3>
               <p className="text-orange-500 mb-1">GITAM University</p>
@@ -510,7 +625,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Contact Section with animated button */}
+      {/* Contact Section */}
       <motion.section 
         id="contact" 
         initial="initial"
@@ -543,6 +658,8 @@ export default function Home() {
             variants={scaleOnHover}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onMouseEnter={() => setCursorHover(true)}
+            onMouseLeave={() => setCursorHover(false)}
             animate={{ 
               boxShadow: ['0 0 0 0 rgba(249, 115, 22, 0.4)', '0 0 0 10px rgba(249, 115, 22, 0)']
             }}
@@ -554,7 +671,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Footer with animated links */}
+      {/* Footer */}
       <motion.footer 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -568,6 +685,8 @@ export default function Home() {
               <motion.a
                 key={i}
                 href="#"
+                onMouseEnter={() => setCursorHover(true)}
+                onMouseLeave={() => setCursorHover(false)}
                 whileHover={{ y: -2, color: '#f97316' }}
                 className="text-zinc-500 hover:text-orange-500 transition-colors"
               >
