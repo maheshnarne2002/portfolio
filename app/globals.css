@@ -2,29 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------------------------------
-   GLOBAL THEME VARIABLES
---------------------------------*/
-:root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-black text-white;
+    cursor: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-.dark {
-  --background: #0d1117;
-  --foreground: #e6edf3;
+@layer utilities {
+  .custom-cursor {
+    mix-blend-mode: difference;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      cursor: auto;
+    }
+    
+    .custom-cursor {
+      display: none;
+    }
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  transition: background 0.3s ease, color 0.3s ease;
-  scroll-behavior: smooth;
-}
-
-/* ------------------------------
-   SMOOTH SCROLLING (Lenis)
---------------------------------*/
+/* Smooth scrolling with Lenis */
 html.lenis {
   height: auto;
 }
@@ -41,69 +50,23 @@ html.lenis {
   overflow: hidden;
 }
 
-/* ------------------------------
-   ANIMATIONS
---------------------------------*/
-
-/* Fade In */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
-.fade-in {
-  animation: fadeIn 1s ease forwards;
+/* Custom selection */
+::selection {
+  background-color: white;
+  color: black;
 }
 
-/* Slide Up */
-@keyframes slideUp {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
-.slide-up {
-  animation: slideUp 0.8s ease forwards;
-}
-
-/* Gradient Background Animation */
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animated-bg {
-  background: linear-gradient(120deg, #3b82f6, #9333ea, #14b8a6);
-  background-size: 200% 200%;
-  animation: gradientShift 10s ease infinite;
-}
-
-/* ------------------------------
-   TYPOGRAPHY
---------------------------------*/
-h1, h2, h3, h4 {
-  font-weight: 600;
-}
-
-p {
-  opacity: 0.85;
-  line-height: 1.7;
-}
-
-/* ------------------------------
-   SECTION SPACING
---------------------------------*/
-section {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
-}
-
-/* ------------------------------
-   UTILITY CLASSES
---------------------------------*/
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
