@@ -9,6 +9,7 @@ export default function Home() {
   const [trailPosition, setTrailPosition] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
   const [cursorHover, setCursorHover] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   
   // Typing animation states
   const [displayFirstName, setDisplayFirstName] = useState('');
@@ -65,14 +66,26 @@ export default function Home() {
       }, 50);
     };
     
+    // Handle scroll to show/hide back to top button
+    const handleScroll = () => {
+      if (window.scrollY > 500) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    
     // Only enable custom cursor on desktop
     if (window.innerWidth > 768) {
       setShowCursor(true);
       window.addEventListener('mousemove', handleMouseMove);
     }
+    
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -81,6 +94,13 @@ export default function Home() {
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   // Animation variants
@@ -213,12 +233,47 @@ export default function Home() {
         </>
       )}
 
+      {/* Back to Top Button */}
+      <motion.button
+        onClick={scrollToTop}
+        onMouseEnter={() => setCursorHover(true)}
+        onMouseLeave={() => setCursorHover(false)}
+        className={`fixed bottom-8 right-8 z-50 p-4 bg-orange-500 text-white rounded-full shadow-lg hover:bg-orange-600 transition-all duration-300 group ${
+          showBackToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: showBackToTop ? 1 : 0, y: showBackToTop ? 0 : 20 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Arrow up icon */}
+        <svg 
+          className="w-6 h-6 transform group-hover:-translate-y-1 transition-transform" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2.5} 
+            d="M5 10l7-7m0 0l7 7m-7-7v18" 
+          />
+        </svg>
+        
+        {/* Tooltip on hover */}
+        <span className="absolute -top-10 right-0 bg-zinc-800 text-white text-sm py-1 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-zinc-700">
+          Back to Top
+        </span>
+      </motion.button>
+
       {/* Simple Navbar with animation */}
       <motion.nav 
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800"
+        className="fixed top-0 left-0 right-0 z-40 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800"
       >
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
