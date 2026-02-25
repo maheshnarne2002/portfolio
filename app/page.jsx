@@ -521,6 +521,7 @@ export default function Home() {
         </motion.div>
 
         <div className="text-center px-6 relative z-10">
+          {/* First name with typing animation */}
           <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 flex items-center justify-center">
             <span className="relative">
               {displayFirstName}
@@ -536,6 +537,7 @@ export default function Home() {
             </span>
           </div>
 
+          {/* Last name with typing animation */}
           <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 flex items-center justify-center">
             <span className="relative">
               <span className={firstNameComplete ? 'text-orange-500' : 'text-white'}>
@@ -553,29 +555,35 @@ export default function Home() {
             </span>
           </div>
 
-          <motion.p 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 2.5 }}
-            className="text-zinc-400 text-lg max-w-3xl mx-auto px-4"
-          >
-            <motion.span
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              Turning complex problems into elegant, scalable solutions
-            </motion.span>
-            <br />
-            <motion.span 
-              className="text-orange-500/80 inline-block"
-              animate={{ 
-                scale: [1, 1.02, 1],
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              Full-Stack Engineer • Java • React • Cloud
-            </motion.span>
-          </motion.p>
+          {/* Tagline - Only appears after ALL typing is complete */}
+          <AnimatePresence>
+            {!showCursor1 && !showCursor2 && displayFirstName === fullFirstName && displayLastName === fullLastName && (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.8 }}
+                className="text-zinc-400 text-lg max-w-3xl mx-auto px-4"
+              >
+                <motion.span
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+                >
+                  Turning complex problems into elegant, scalable solutions
+                </motion.span>
+                <br />
+                <motion.span 
+                  className="text-orange-500/80 inline-block"
+                  animate={{ 
+                    scale: [1, 1.02, 1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+                >
+                  Full-Stack Engineer • Java • React • Cloud
+                </motion.span>
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
