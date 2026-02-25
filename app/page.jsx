@@ -14,13 +14,12 @@ export default function Home() {
   // Loading and glitch states
   const [isLoading, setIsLoading] = useState(true);
   const [glitchText, setGlitchText] = useState('');
-  const [glitchIntensity, setGlitchIntensity] = useState(0);
   
   // Typing animation states
   const [displayFirstName, setDisplayFirstName] = useState('');
   const [displayLastName, setDisplayLastName] = useState('');
   const [firstNameComplete, setFirstNameComplete] = useState(false);
-  const [showCursor1, setShowCursor1] = useState(false); // Start false, will enable after glitch
+  const [showCursor1, setShowCursor1] = useState(false);
   const [showCursor2, setShowCursor2] = useState(false);
 
   const fullFirstName = 'MAHESH BABU';
@@ -29,42 +28,35 @@ export default function Home() {
   // Glitch effect on load
   useEffect(() => {
     const glitchSequence = async () => {
-      // Initial glitch characters
       const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
       let counter = 0;
       
-      // First phase: Random glitch text
       const glitchInterval = setInterval(() => {
         let randomStr = '';
         for (let i = 0; i < 20; i++) {
           randomStr += glitchChars[Math.floor(Math.random() * glitchChars.length)];
         }
         setGlitchText(randomStr);
-        setGlitchIntensity(Math.random());
         
         counter++;
-        if (counter > 15) { // After 15 frames, start resolving
+        if (counter > 15) {
           clearInterval(glitchInterval);
           
-          // Second phase: Quick flashes of real text
           let flashCount = 0;
           const flashInterval = setInterval(() => {
             if (flashCount % 2 === 0) {
               setGlitchText('MAHESH BABU NARNE');
-              setGlitchIntensity(0.8);
             } else {
               setGlitchText('➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤');
-              setGlitchIntensity(0.5);
             }
             
             flashCount++;
             if (flashCount > 5) {
               clearInterval(flashInterval);
               
-              // Final: Show real page
               setTimeout(() => {
                 setIsLoading(false);
-                setShowCursor1(true); // Start typing animation
+                setShowCursor1(true);
               }, 300);
             }
           }, 100);
@@ -77,7 +69,6 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading) {
-      // Typing animation for first name
       let i = 0;
       const typeFirstName = setInterval(() => {
         if (i < fullFirstName.length) {
@@ -89,7 +80,6 @@ export default function Home() {
           setShowCursor1(false);
           setShowCursor2(true);
           
-          // Start typing last name after a short delay
           setTimeout(() => {
             let j = 0;
             const typeLastName = setInterval(() => {
@@ -108,17 +98,14 @@ export default function Home() {
   }, [isLoading]);
 
   useEffect(() => {
-    // Mouse move for custom cursor with trail
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
       
-      // Create trail effect with delay
       setTimeout(() => {
         setTrailPosition({ x: e.clientX, y: e.clientY });
       }, 50);
     };
     
-    // Handle scroll to show/hide back to top button
     const handleScroll = () => {
       if (window.scrollY > 500) {
         setShowBackToTop(true);
@@ -127,7 +114,6 @@ export default function Home() {
       }
     };
     
-    // Only enable custom cursor on desktop
     if (window.innerWidth > 768) {
       setShowCursor(true);
       window.addEventListener('mousemove', handleMouseMove);
@@ -155,7 +141,6 @@ export default function Home() {
     });
   };
 
-  // Animation variants
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
@@ -175,7 +160,6 @@ export default function Home() {
     whileTap: { scale: 0.95 }
   };
 
-  // Experience data from resume
   const experiences = [
     {
       company: 'Apple',
@@ -208,7 +192,6 @@ export default function Home() {
     }
   ];
 
-  // Achievements from resume
   const achievements = [
     'Architected and deployed a full-stack e-commerce platform handling 200K+ daily transactions with 99.99% uptime and sub-100ms response times',
     'Optimized database queries and introduced Redis caching, improving API response times by 65% and reducing infrastructure costs by 30%',
@@ -218,29 +201,18 @@ export default function Home() {
     'Delivered 3 major greenfield projects from concept to production within 6-month timelines'
   ];
 
-  // Skills from resume
   const skills = [
-    // Programming Languages
     'Java', 'Python', 'C#', 'C++', 'JavaScript', 'TypeScript', 'SQL', 'Go',
-    // Frontend
     'React', 'Next.js', 'Redux', 'Tailwind CSS', 'HTML5', 'CSS3', 'Material-UI',
-    // Backend
     'Spring Boot', '.NET Core', 'Node.js', 'Express', 'Django', 'GraphQL',
-    // Cloud
-    'AWS (EC2, S3, Lambda)', 'Azure', 'OCI', 'Cloud-Native Architecture',
-    // Databases
+    'AWS', 'Azure', 'OCI', 'Cloud-Native Architecture',
     'PostgreSQL', 'MySQL', 'MongoDB', 'Cassandra', 'Redis',
-    // Messaging
     'Kafka', 'RabbitMQ', 'ActiveMQ', 'Event-Driven Architecture',
-    // DevOps
     'Docker', 'Kubernetes', 'Jenkins', 'GitHub Actions', 'Terraform',
-    // Monitoring
     'Prometheus', 'Grafana', 'ELK Stack', 'Distributed Tracing',
-    // Testing
     'JUnit', 'Mockito', 'Jest', 'React Testing Library', 'Selenium'
   ];
 
-  // Certifications from resume
   const certifications = [
     'AWS Certified Solutions Architect – Associate',
     'Microsoft Certified: Azure Developer Associate',
@@ -269,7 +241,6 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="fixed inset-0 z-[100] bg-zinc-900 flex items-center justify-center overflow-hidden"
           >
-            {/* Glitch overlay effects */}
             <motion.div 
               className="absolute inset-0"
               animate={{
@@ -285,7 +256,6 @@ export default function Home() {
               style={{ opacity: 0.1 }}
             />
             
-            {/* RGB split effect */}
             <motion.div
               className="absolute inset-0"
               animate={{
@@ -305,7 +275,6 @@ export default function Home() {
               }}
             />
 
-            {/* Main glitch text */}
             <div className="relative text-center">
               <motion.h1
                 className="text-6xl md:text-8xl font-bold font-mono relative"
@@ -325,7 +294,6 @@ export default function Home() {
                 {glitchText}
               </motion.h1>
               
-              {/* Glitch overlay text */}
               <motion.h1
                 className="text-6xl md:text-8xl font-bold font-mono absolute top-0 left-0 opacity-50"
                 animate={{
@@ -344,7 +312,6 @@ export default function Home() {
                 {glitchText}
               </motion.h1>
 
-              {/* Loading text */}
               <motion.p
                 className="text-orange-500 mt-8 text-lg font-mono"
                 animate={{
@@ -356,7 +323,6 @@ export default function Home() {
                 ⚡ INITIALIZING SYSTEM ⚡
               </motion.p>
 
-              {/* Binary rain effect */}
               <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 {[...Array(10)].map((_, i) => (
                   <motion.div
@@ -384,7 +350,6 @@ export default function Home() {
       {/* Custom Trailing Cursor */}
       {showCursor && !isLoading && (
         <>
-          {/* Main cursor dot */}
           <motion.div 
             className={`cursor-dot ${cursorHover ? 'hover' : ''}`}
             animate={{
@@ -394,7 +359,6 @@ export default function Home() {
             transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
           />
           
-          {/* Trailing cursor effect */}
           <motion.div 
             className={`trailing-cursor ${cursorHover ? 'hover' : ''}`}
             animate={{
@@ -420,7 +384,6 @@ export default function Home() {
         animate={{ opacity: showBackToTop ? 1 : 0, y: showBackToTop ? 0 : 20 }}
         transition={{ duration: 0.3 }}
       >
-        {/* Arrow up icon */}
         <svg 
           className="w-6 h-6 transform group-hover:-translate-y-1 transition-transform" 
           fill="none" 
@@ -435,13 +398,12 @@ export default function Home() {
           />
         </svg>
         
-        {/* Tooltip on hover */}
         <span className="absolute -top-10 right-0 bg-zinc-800 text-white text-sm py-1 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-zinc-700">
           Back to Top
         </span>
       </motion.button>
 
-      {/* Simple Navbar with animation */}
+      {/* Navbar */}
       <motion.nav 
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -450,7 +412,6 @@ export default function Home() {
       >
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo with hover animation */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
@@ -462,7 +423,6 @@ export default function Home() {
               MN
             </motion.button>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
                 <motion.button
@@ -478,7 +438,6 @@ export default function Home() {
                 </motion.button>
               ))}
               
-              {/* Resume Button with pulse animation */}
               <motion.a
                 href="/resume.pdf"
                 target="_blank"
@@ -497,7 +456,6 @@ export default function Home() {
               </motion.a>
             </div>
 
-            {/* Mobile Menu Button */}
             <motion.button 
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -513,9 +471,8 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Hero Section with typing animation */}
+      {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
-        {/* Animated background circles */}
         <motion.div 
           className="absolute inset-0 opacity-20"
           initial={{ opacity: 0 }}
@@ -541,7 +498,6 @@ export default function Home() {
         </motion.div>
 
         <div className="text-center px-6 relative z-10">
-          {/* First name with typing animation */}
           <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-4 flex items-center justify-center">
             <span className="relative">
               {displayFirstName}
@@ -557,7 +513,6 @@ export default function Home() {
             </span>
           </div>
 
-          {/* Last name with typing animation */}
           <div className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 flex items-center justify-center">
             <span className="relative">
               <span className={firstNameComplete ? 'text-orange-500' : 'text-white'}>
@@ -601,35 +556,293 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Summary */}
+      {/* Professional Summary with Nutshell Breaking Animation */}
       <motion.section 
         initial="initial"
         whileInView="animate"
         viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUp}
-        className="py-20 px-6 border-t border-zinc-800"
+        className="py-20 px-6 border-t border-zinc-800 relative overflow-hidden"
       >
-        <div className="max-w-4xl mx-auto">
-          <motion.h2 
-            variants={fadeInUp}
-            className="text-3xl md:text-4xl font-bold mb-8 text-orange-500"
+        <div className="max-w-4xl mx-auto relative z-10">
+          {/* Nutshell Animation Container */}
+          <div className="relative mb-12 flex justify-center">
+            {/* Breaking Nutshell Animation */}
+            <motion.div
+              className="relative w-32 h-32 md:w-40 md:h-40"
+              animate="animate"
+              initial="initial"
+              variants={{
+                initial: {
+                  scale: 1,
+                  rotate: 0
+                },
+                animate: {
+                  scale: [1, 1.2, 0],
+                  rotate: [0, 360, 720],
+                  transition: {
+                    duration: 2,
+                    times: [0, 0.3, 1],
+                    ease: "easeInOut"
+                  }
+                }
+              }}
+            >
+              {/* Nut Shell - Top */}
+              <motion.div
+                className="absolute top-0 left-0 w-full h-1/2 bg-amber-800 rounded-t-[50%] border-4 border-amber-900 origin-bottom"
+                variants={{
+                  initial: { rotateX: 0, opacity: 1 },
+                  animate: { 
+                    rotateX: 180,
+                    opacity: 0,
+                    y: -50,
+                    transition: { delay: 0.8, duration: 0.5 }
+                  }
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-700 to-amber-900 rounded-t-[50%]">
+                  <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-600 rounded-full" />
+                  <div className="absolute top-1/2 right-1/3 w-3 h-3 bg-amber-600 rounded-full" />
+                  <div className="absolute bottom-1/4 left-1/3 w-2 h-2 bg-amber-600 rounded-full" />
+                </div>
+              </motion.div>
+
+              {/* Nut Shell - Bottom */}
+              <motion.div
+                className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-800 rounded-b-[50%] border-4 border-amber-900 origin-top"
+                variants={{
+                  initial: { rotateX: 0, opacity: 1 },
+                  animate: { 
+                    rotateX: -180,
+                    opacity: 0,
+                    y: 50,
+                    transition: { delay: 0.8, duration: 0.5 }
+                  }
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-amber-700 to-amber-900 rounded-b-[50%]">
+                  <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-amber-600 rounded-full" />
+                  <div className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-amber-600 rounded-full" />
+                </div>
+              </motion.div>
+
+              {/* Nut inside */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-600 rounded-full"
+                variants={{
+                  initial: { scale: 0, opacity: 0 },
+                  animate: { 
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 1, 0],
+                    transition: { delay: 0.4, duration: 1 }
+                  }
+                }}
+              />
+            </motion.div>
+
+            {/* Flying pieces of content */}
+            <div className="absolute inset-0 pointer-events-none">
+              {[
+                { icon: '☕', delay: 1.2, x: -100, y: -50, rotate: -45 },
+                { icon: '⚡', delay: 1.3, x: 120, y: -30, rotate: 30 },
+                { icon: '🚀', delay: 1.4, x: -80, y: 60, rotate: 15 },
+                { icon: '💡', delay: 1.5, x: 90, y: 40, rotate: -20 },
+                { icon: '🔧', delay: 1.6, x: -120, y: -20, rotate: 60 },
+                { icon: '📦', delay: 1.7, x: 100, y: -60, rotate: -10 },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute left-1/2 top-1/2 text-3xl md:text-4xl"
+                  initial={{ x: -20, y: -20, opacity: 0, scale: 0 }}
+                  animate={{ 
+                    x: item.x - 20,
+                    y: item.y - 20,
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.5, 0],
+                    rotate: [0, item.rotate, item.rotate * 2]
+                  }}
+                  transition={{ 
+                    delay: item.delay,
+                    duration: 1.5,
+                    ease: "easeOut"
+                  }}
+                >
+                  {item.icon}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Flying text fragments */}
+            <motion.div
+              className="absolute left-1/2 top-1/2 pointer-events-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8 }}
+            >
+              {[
+                'Java', 'React', 'Cloud', 'Scale', 'Innovate',
+                '4+ years', 'Expert', 'Full-Stack', 'Distributed'
+              ].map((text, i) => {
+                const angle = (i * 40) * (Math.PI / 180);
+                const radius = 150;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                return (
+                  <motion.span
+                    key={i}
+                    className="absolute text-orange-500 text-sm font-bold whitespace-nowrap"
+                    initial={{ x: -20, y: -20, opacity: 0, scale: 0 }}
+                    animate={{ 
+                      x: x - 20,
+                      y: y - 20,
+                      opacity: [0, 1, 0],
+                      scale: [0, 1, 0.5],
+                    }}
+                    transition={{ 
+                      delay: 2.0 + (i * 0.1),
+                      duration: 1.5,
+                      ease: "easeOut"
+                    }}
+                  >
+                    {text}
+                  </motion.span>
+                );
+              })}
+            </motion.div>
+          </div>
+
+          {/* Content that appears after nutshell breaks */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 2.5, duration: 0.8 }}
+            className="relative"
           >
-            In a Nutshell
-          </motion.h2>
-          <motion.p 
-            variants={fadeInUp}
-            className="text-zinc-300 text-lg leading-relaxed"
-          >
-            Senior Software Engineer with 4+ years of experience designing and delivering scalable, high‑performance 
-            full‑stack applications and distributed systems. Expert in Java, Spring Boot, Python, C#, and React with 
-            deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of 
-            leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate 
-            about building reliable, observable, and impactful software solutions across the entire technology stack.
-          </motion.p>
+            {/* Sparkle effects around the text */}
+            <motion.div
+              className="absolute -inset-4 pointer-events-none"
+              animate={{
+                boxShadow: [
+                  '0 0 0 0 rgba(249,115,22,0)',
+                  '0 0 30px 10px rgba(249,115,22,0.3)',
+                  '0 0 0 0 rgba(249,115,22,0)',
+                ]
+              }}
+              transition={{ duration: 2, delay: 3, repeat: Infinity }}
+            />
+
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-8 text-orange-500 relative inline-block"
+            >
+              <span className="relative z-10">In a Nutshell</span>
+              
+              {/* Animated underline */}
+              <motion.div
+                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-transparent"
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ delay: 3, duration: 0.8 }}
+              />
+            </motion.h2>
+
+            {/* Text with animated gradient background */}
+            <motion.div
+              className="relative p-6 rounded-xl overflow-hidden"
+              initial={{ background: 'transparent' }}
+              animate={{
+                background: [
+                  'linear-gradient(45deg, transparent, transparent)',
+                  'linear-gradient(45deg, rgba(249,115,22,0.1), transparent, rgba(59,130,246,0.1))',
+                  'linear-gradient(45deg, transparent, transparent)',
+                ]
+              }}
+              transition={{ duration: 3, delay: 3.2, repeat: Infinity }}
+            >
+              <motion.p 
+                className="text-zinc-300 text-lg leading-relaxed relative"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.8, duration: 1 }}
+              >
+                {/* Animated words */}
+                {[
+                  'Senior Software Engineer with ', 
+                  '4+ years', 
+                  ' of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. Expert in ', 
+                  'Java', ', ', 'Spring Boot', ', ', 'Python', ', ', 'C#', ', and ', 'React', 
+                  ' with deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.'
+                ].map((part, i) => {
+                  if (['4+ years', 'Java', 'Spring Boot', 'Python', 'C#', 'React'].includes(part.trim())) {
+                    return (
+                      <motion.span
+                        key={i}
+                        className="text-orange-500 font-semibold inline-block"
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          color: ['#f97316', '#fb923c', '#f97316']
+                        }}
+                        transition={{ 
+                          duration: 2,
+                          delay: 3.5 + (i * 0.2),
+                          repeat: Infinity,
+                          repeatDelay: 3
+                        }}
+                      >
+                        {part}
+                      </motion.span>
+                    );
+                  }
+                  return <span key={i}>{part}</span>;
+                })}
+              </motion.p>
+
+              {/* Floating tech icons */}
+              <div className="absolute inset-0 pointer-events-none">
+                {['⚛️', '🐍', '☕', '🐳', '☁️', '📊'].map((icon, i) => {
+                  const x = Math.random() * 100;
+                  const y = Math.random() * 100;
+                  return (
+                    <motion.div
+                      key={i}
+                      className="absolute text-2xl opacity-10"
+                      style={{ left: `${x}%`, top: `${y}%` }}
+                      animate={{
+                        y: [0, -20, 0],
+                        rotate: [0, 360],
+                        opacity: [0.1, 0.3, 0.1]
+                      }}
+                      transition={{
+                        duration: 10 + i,
+                        repeat: Infinity,
+                        delay: i * 2
+                      }}
+                    >
+                      {icon}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
+
+        {/* Background effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0, 0.3, 0],
+          }}
+          transition={{
+            duration: 4,
+            delay: 2.5,
+            repeat: Infinity,
+          }}
+        />
       </motion.section>
 
-      {/* Rest of your sections remain the same... */}
       {/* Experience Section */}
       <motion.section 
         id="experience" 
