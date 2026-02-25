@@ -18,14 +18,18 @@ export default function Home() {
     offset: ["start end", "end start"]
   });
   
-  // Transform scroll progress to animation values
-  const shellRotate = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 180, 180, 0]);
-  const shellTopY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, -100, -100, 0]);
-  const shellBottomY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 100, 100, 0]);
-  const shellOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0, 0, 1]);
-  const textOpacity = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0]);
-  const nutshellScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [1, 1.2, 1.2, 1]);
-  const glowIntensity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1, 0]);
+  // Smooth transforms for elegant animation
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3, 0.7, 0.8, 1], [0, 0.5, 1, 1, 0.5, 0]);
+  const titleY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [50, 0, 0, -50]);
+  const contentOpacity = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0]);
+  const contentScale = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0.8, 1, 1, 0.8]);
+  const contentY = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [30, 0, 0, -30]);
+  
+  // Decorative elements animation
+  const circle1Scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 1.5, 0.5]);
+  const circle2Scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.8, 0.8]);
+  const circle3Scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1.3, 0.3]);
+  const circleOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.1, 0.3, 0.3, 0.1]);
   
   // Loading and glitch states
   const [isLoading, setIsLoading] = useState(true);
@@ -575,156 +579,135 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Summary with Scroll-Controlled Nutshell Animation - Full Viewport Height */}
+      {/* Professional Summary with Elegant Reveal Animation - Full Viewport Height */}
       <section 
         ref={nutshellRef}
         className="h-screen flex items-center justify-center px-6 border-t border-zinc-800 relative overflow-hidden"
       >
         <div className="max-w-4xl mx-auto relative z-10 w-full">
-          {/* Nutshell Animation Container */}
-          <div className="relative mb-12 flex justify-center">
-            {/* Glow effect based on scroll */}
-            <motion.div
-              className="absolute inset-0 bg-orange-500 rounded-full blur-3xl"
-              style={{
-                opacity: glowIntensity,
-                scale: useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0.5, 1.5, 0.5])
-              }}
-            />
-
-            {/* Breaking Nutshell - Controlled by scroll */}
-            <motion.div
-              className="relative w-48 h-48 md:w-64 md:h-64"
-              style={{
-                scale: nutshellScale,
-              }}
-            >
-              {/* Nut Shell - Top */}
-              <motion.div
-                className="absolute top-0 left-0 w-full h-1/2 bg-amber-700 rounded-t-[50%] border-4 border-amber-900 origin-bottom shadow-xl"
-                style={{
-                  rotateX: shellRotate,
-                  y: shellTopY,
-                  opacity: shellOpacity,
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-[50%]">
-                  <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-amber-500 rounded-full" />
-                  <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-amber-500 rounded-full" />
-                  <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-amber-500 rounded-full" />
-                </div>
-              </motion.div>
-
-              {/* Nut Shell - Bottom */}
-              <motion.div
-                className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-700 rounded-b-[50%] border-4 border-amber-900 origin-top shadow-xl"
-                style={{
-                  rotateX: useTransform(shellRotate, (v) => -v),
-                  y: shellBottomY,
-                  opacity: shellOpacity,
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-amber-800 rounded-b-[50%]">
-                  <div className="absolute top-1/4 left-1/2 w-3 h-3 bg-amber-500 rounded-full" />
-                  <div className="absolute bottom-1/3 right-1/4 w-4 h-4 bg-amber-500 rounded-full" />
-                </div>
-              </motion.div>
-
-              {/* Nut inside - pulses as you scroll */}
-              <motion.div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-600 rounded-full shadow-inner"
-                style={{
-                  scale: useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1.5, 0]),
-                  opacity: useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0])
-                }}
-              >
-                <div className="absolute inset-2 bg-amber-500 rounded-full" />
-              </motion.div>
-            </motion.div>
-
-            {/* Flying icons that appear as shell opens */}
-            <motion.div 
-              className="absolute inset-0 pointer-events-none"
-              style={{ opacity: useTransform(scrollYProgress, [0.2, 0.4, 0.8], [0, 1, 0]) }}
-            >
-              {[
-                { icon: '⚛️', angle: 0, distance: 150 },
-                { icon: '🔥', angle: 45, distance: 180 },
-                { icon: '🚀', angle: 90, distance: 160 },
-                { icon: '💡', angle: 135, distance: 170 },
-                { icon: '⚡', angle: 180, distance: 150 },
-                { icon: '📦', angle: 225, distance: 190 },
-                { icon: '🎯', angle: 270, distance: 160 },
-                { icon: '🔧', angle: 315, distance: 180 },
-              ].map((item, i) => {
-                const rad = (item.angle * Math.PI) / 180;
-                const x = Math.cos(rad) * item.distance;
-                const y = Math.sin(rad) * item.distance;
-                
-                return (
-                  <motion.div
-                    key={i}
-                    className="absolute left-1/2 top-1/2 text-4xl md:text-5xl"
-                    style={{
-                      x: useTransform(scrollYProgress, [0.3, 0.5], [0, x]),
-                      y: useTransform(scrollYProgress, [0.3, 0.5], [0, y]),
-                      rotate: useTransform(scrollYProgress, [0.3, 0.5], [0, 360]),
-                      opacity: useTransform(scrollYProgress, [0.3, 0.4, 0.6, 0.7], [0, 1, 1, 0]),
-                      scale: useTransform(scrollYProgress, [0.3, 0.5], [0, 1.2]),
-                    }}
-                  >
-                    {item.icon}
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </div>
-
-          {/* Text content that fades in/out with scroll */}
+          {/* Decorative animated circles */}
           <motion.div
-            className="relative text-center"
-            style={{ opacity: textOpacity }}
-          >
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-8 text-orange-500"
-              style={{
-                y: useTransform(scrollYProgress, [0.3, 0.5], [30, 0]),
-              }}
-            >
-              In a Nutshell
-            </motion.h2>
+            className="absolute -top-40 -left-40 w-80 h-80 border-2 border-orange-500/10 rounded-full"
+            style={{
+              scale: circle1Scale,
+              opacity: circleOpacity,
+            }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -right-40 w-96 h-96 border-2 border-blue-500/10 rounded-full"
+            style={{
+              scale: circle2Scale,
+              opacity: circleOpacity,
+            }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border-2 border-purple-500/5 rounded-full"
+            style={{
+              scale: circle3Scale,
+              opacity: circleOpacity,
+            }}
+          />
 
-            {/* Text content */}
-            <motion.div
-              className="relative p-6 rounded-xl bg-zinc-800/50 border border-orange-500/20"
-              style={{
-                scale: useTransform(scrollYProgress, [0.3, 0.5], [0.9, 1]),
-                y: useTransform(scrollYProgress, [0.3, 0.5], [30, 0]),
-              }}
-            >
-              <motion.p className="text-zinc-300 text-lg leading-relaxed">
-                Senior Software Engineer with{' '}
-                <span className="text-orange-500 font-semibold">4+ years</span>{' '}
-                of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. Expert in{' '}
-                <span className="text-orange-500 font-semibold">Java</span>,{' '}
-                <span className="text-orange-500 font-semibold">Spring Boot</span>,{' '}
-                <span className="text-orange-500 font-semibold">Python</span>,{' '}
-                <span className="text-orange-500 font-semibold">C#</span>, and{' '}
-                <span className="text-orange-500 font-semibold">React</span>{' '}
-                with deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.
+          {/* Title with fade and slide */}
+          <motion.h2 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12 text-orange-500"
+            style={{
+              opacity: titleOpacity,
+              y: titleY,
+            }}
+          >
+            In a Nutshell
+          </motion.h2>
+
+          {/* Content with smooth reveal */}
+          <motion.div
+            className="relative"
+            style={{
+              opacity: contentOpacity,
+              scale: contentScale,
+              y: contentY,
+            }}
+          >
+            {/* Gradient border effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-purple-500/20 to-blue-500/20 rounded-2xl blur-xl" />
+            
+            {/* Main content card */}
+            <div className="relative bg-zinc-800/80 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-zinc-700 shadow-2xl">
+              {/* Floating particles */}
+              {[...Array(6)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-orange-500/30 rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    y: [0, -30, 0],
+                    opacity: [0, 0.5, 0],
+                  }}
+                  transition={{
+                    duration: 4 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+
+              {/* Content text */}
+              <motion.p className="text-zinc-300 text-lg md:text-xl leading-relaxed">
+                <span className="text-orange-500 font-semibold text-xl md:text-2xl block mb-4">
+                  Senior Software Engineer
+                </span>
+                with <span className="text-orange-500 font-semibold">4+ years</span> of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. 
+                
+                <span className="block mt-4">
+                  Expert in <span className="text-orange-500 font-semibold">Java</span>, <span className="text-orange-500 font-semibold">Spring Boot</span>, <span className="text-orange-500 font-semibold">Python</span>, <span className="text-orange-500 font-semibold">C#</span>, and <span className="text-orange-500 font-semibold">React</span> with deep expertise in cloud‑native architectures, microservices, and RESTful APIs.
+                </span>
+                
+                <span className="block mt-4">
+                  Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.
+                </span>
               </motion.p>
+
+              {/* Tech stack tags */}
+              <motion.div 
+                className="flex flex-wrap gap-2 mt-6 justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {['Java', 'Spring', 'React', 'AWS', 'Python', 'Docker'].map((tech, i) => (
+                  <motion.span
+                    key={i}
+                    className="px-3 py-1 bg-zinc-700/50 text-orange-500 text-sm rounded-full border border-orange-500/20"
+                    whileHover={{ scale: 1.1, backgroundColor: '#f97316', color: 'white' }}
+                    transition={{ type: 'spring', stiffness: 400 }}
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Scroll indicator */}
+          <motion.div 
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-orange-500/50 text-sm flex flex-col items-center"
+            style={{
+              opacity: useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0.5, 0.5, 1]),
+            }}
+          >
+            <span>Scroll to reveal</span>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="mt-2"
+            >
+              ↓
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-orange-500/50 text-sm"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          Scroll to crack open
-        </motion.div>
       </section>
 
       {/* Experience Section */}
