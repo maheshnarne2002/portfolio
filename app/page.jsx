@@ -1,15 +1,31 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 export default function Home() {
   const containerRef = useRef(null);
+  const nutshellRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [trailPosition, setTrailPosition] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
   const [cursorHover, setCursorHover] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  
+  // Scroll progress for nutshell animation
+  const { scrollYProgress } = useScroll({
+    target: nutshellRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Transform scroll progress to animation values
+  const shellRotate = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 180, 180, 0]);
+  const shellTopY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, -100, -100, 0]);
+  const shellBottomY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 100, 100, 0]);
+  const shellOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0, 0, 1]);
+  const textOpacity = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0]);
+  const nutshellScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [1, 1.2, 1.2, 1]);
+  const glowIntensity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1, 0]);
   
   // Loading and glitch states
   const [isLoading, setIsLoading] = useState(true);
@@ -474,8 +490,8 @@ export default function Home() {
         </div>
       </motion.nav>
 
-      {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
+      {/* Hero Section - Full Viewport Height */}
+      <section id="home" className="h-screen flex items-center justify-center pt-16 relative overflow-hidden">
         <motion.div 
           className="absolute inset-0 opacity-20"
           initial={{ opacity: 0 }}
@@ -559,318 +575,157 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Summary with Nutshell Breaking Animation */}
-      <motion.section 
-        initial="initial"
-        whileInView="animate"
-        viewport={{ once: false, amount: 0.5 }}
-        className="py-20 px-6 border-t border-zinc-800 relative overflow-hidden min-h-[600px] flex items-center"
+      {/* Professional Summary with Scroll-Controlled Nutshell Animation - Full Viewport Height */}
+      <section 
+        ref={nutshellRef}
+        className="h-screen flex items-center justify-center px-6 border-t border-zinc-800 relative overflow-hidden"
       >
         <div className="max-w-4xl mx-auto relative z-10 w-full">
           {/* Nutshell Animation Container */}
-          <div className="relative mb-16 flex justify-center">
-            {/* Breaking Nutshell Animation */}
+          <div className="relative mb-12 flex justify-center">
+            {/* Glow effect based on scroll */}
+            <motion.div
+              className="absolute inset-0 bg-orange-500 rounded-full blur-3xl"
+              style={{
+                opacity: glowIntensity,
+                scale: useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0.5, 1.5, 0.5])
+              }}
+            />
+
+            {/* Breaking Nutshell - Controlled by scroll */}
             <motion.div
               className="relative w-48 h-48 md:w-64 md:h-64"
-              animate="animate"
-              initial="initial"
-              variants={{
-                initial: {
-                  scale: 1,
-                  rotate: 0
-                },
-                animate: {
-                  scale: [1, 1.3, 0],
-                  rotate: [0, 720, 1080],
-                  transition: {
-                    duration: 2.5,
-                    times: [0, 0.4, 1],
-                    ease: "easeInOut"
-                  }
-                }
+              style={{
+                scale: nutshellScale,
               }}
             >
               {/* Nut Shell - Top */}
               <motion.div
                 className="absolute top-0 left-0 w-full h-1/2 bg-amber-700 rounded-t-[50%] border-4 border-amber-900 origin-bottom shadow-xl"
-                variants={{
-                  initial: { rotateX: 0, opacity: 1 },
-                  animate: { 
-                    rotateX: 180,
-                    opacity: 0,
-                    y: -100,
-                    transition: { delay: 1, duration: 0.6 }
-                  }
+                style={{
+                  rotateX: shellRotate,
+                  y: shellTopY,
+                  opacity: shellOpacity,
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-[50%]">
                   <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-amber-500 rounded-full" />
                   <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-amber-500 rounded-full" />
                   <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-amber-500 rounded-full" />
-                  <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-amber-500 rounded-full" />
                 </div>
               </motion.div>
 
               {/* Nut Shell - Bottom */}
               <motion.div
                 className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-700 rounded-b-[50%] border-4 border-amber-900 origin-top shadow-xl"
-                variants={{
-                  initial: { rotateX: 0, opacity: 1 },
-                  animate: { 
-                    rotateX: -180,
-                    opacity: 0,
-                    y: 100,
-                    transition: { delay: 1, duration: 0.6 }
-                  }
+                style={{
+                  rotateX: useTransform(shellRotate, (v) => -v),
+                  y: shellBottomY,
+                  opacity: shellOpacity,
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-amber-800 rounded-b-[50%]">
                   <div className="absolute top-1/4 left-1/2 w-3 h-3 bg-amber-500 rounded-full" />
                   <div className="absolute bottom-1/3 right-1/4 w-4 h-4 bg-amber-500 rounded-full" />
-                  <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-amber-500 rounded-full" />
                 </div>
               </motion.div>
 
-              {/* Nut inside */}
+              {/* Nut inside - pulses as you scroll */}
               <motion.div
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-600 rounded-full shadow-inner"
-                variants={{
-                  initial: { scale: 0, opacity: 0 },
-                  animate: { 
-                    scale: [0, 1.8, 0],
-                    opacity: [0, 1, 0],
-                    transition: { delay: 0.5, duration: 1.2 }
-                  }
+                style={{
+                  scale: useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1.5, 0]),
+                  opacity: useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [0, 1, 1, 0])
                 }}
               >
                 <div className="absolute inset-2 bg-amber-500 rounded-full" />
               </motion.div>
             </motion.div>
 
-            {/* Flying pieces - Icons */}
-            <div className="absolute inset-0 pointer-events-none">
+            {/* Flying icons that appear as shell opens */}
+            <motion.div 
+              className="absolute inset-0 pointer-events-none"
+              style={{ opacity: useTransform(scrollYProgress, [0.2, 0.4, 0.8], [0, 1, 0]) }}
+            >
               {[
-                { icon: '⚛️', delay: 1.3, x: -120, y: -80, rotate: -45 },
-                { icon: '🔥', delay: 1.4, x: 140, y: -60, rotate: 30 },
-                { icon: '🚀', delay: 1.5, x: -100, y: 80, rotate: 15 },
-                { icon: '💡', delay: 1.6, x: 110, y: 70, rotate: -20 },
-                { icon: '⚡', delay: 1.7, x: -140, y: -40, rotate: 60 },
-                { icon: '📦', delay: 1.8, x: 130, y: -90, rotate: -10 },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute left-1/2 top-1/2 text-4xl md:text-5xl"
-                  initial={{ x: -32, y: -32, opacity: 0, scale: 0 }}
-                  animate={{ 
-                    x: item.x - 32,
-                    y: item.y - 32,
-                    opacity: [0, 1, 0],
-                    scale: [0, 1.5, 0],
-                    rotate: [0, item.rotate, item.rotate * 2]
-                  }}
-                  transition={{ 
-                    delay: item.delay,
-                    duration: 1.5,
-                    ease: "easeOut"
-                  }}
-                >
-                  {item.icon}
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Flying text fragments */}
-            <div className="absolute inset-0 pointer-events-none">
-              {[
-                'Java', 'React', 'Cloud', 'Scale', '4+ Years',
-                'Expert', 'Full-Stack', 'Distributed', 'Innovation'
-              ].map((text, i) => {
-                const angle = (i * 40) * (Math.PI / 180);
-                const radius = 200;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
+                { icon: '⚛️', angle: 0, distance: 150 },
+                { icon: '🔥', angle: 45, distance: 180 },
+                { icon: '🚀', angle: 90, distance: 160 },
+                { icon: '💡', angle: 135, distance: 170 },
+                { icon: '⚡', angle: 180, distance: 150 },
+                { icon: '📦', angle: 225, distance: 190 },
+                { icon: '🎯', angle: 270, distance: 160 },
+                { icon: '🔧', angle: 315, distance: 180 },
+              ].map((item, i) => {
+                const rad = (item.angle * Math.PI) / 180;
+                const x = Math.cos(rad) * item.distance;
+                const y = Math.sin(rad) * item.distance;
                 
                 return (
-                  <motion.span
+                  <motion.div
                     key={i}
-                    className="absolute text-orange-500 text-sm md:text-base font-bold whitespace-nowrap"
-                    initial={{ x: -20, y: -20, opacity: 0, scale: 0 }}
-                    animate={{ 
-                      x: x - 20,
-                      y: y - 20,
-                      opacity: [0, 1, 0],
-                      scale: [0, 1.2, 0],
-                    }}
-                    transition={{ 
-                      delay: 2.0 + (i * 0.1),
-                      duration: 1.8,
-                      ease: "easeOut"
+                    className="absolute left-1/2 top-1/2 text-4xl md:text-5xl"
+                    style={{
+                      x: useTransform(scrollYProgress, [0.3, 0.5], [0, x]),
+                      y: useTransform(scrollYProgress, [0.3, 0.5], [0, y]),
+                      rotate: useTransform(scrollYProgress, [0.3, 0.5], [0, 360]),
+                      opacity: useTransform(scrollYProgress, [0.3, 0.4, 0.6, 0.7], [0, 1, 1, 0]),
+                      scale: useTransform(scrollYProgress, [0.3, 0.5], [0, 1.2]),
                     }}
                   >
-                    {text}
-                  </motion.span>
+                    {item.icon}
+                  </motion.div>
                 );
               })}
-            </div>
-
-            {/* Explosion effect */}
-            <motion.div
-              className="absolute left-1/2 top-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ 
-                opacity: [0, 0.8, 0],
-                scale: [0, 2, 3],
-              }}
-              transition={{ delay: 1.2, duration: 1 }}
-            >
-              <div className="w-full h-full bg-orange-500 rounded-full blur-xl" />
             </motion.div>
           </div>
 
-          {/* Content that appears after nutshell breaks */}
+          {/* Text content that fades in/out with scroll */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.8, duration: 0.8 }}
-            className="relative"
+            className="relative text-center"
+            style={{ opacity: textOpacity }}
           >
-            {/* Sparkle effects */}
-            <motion.div
-              className="absolute -inset-4 pointer-events-none"
-              animate={{
-                boxShadow: [
-                  '0 0 0 0 rgba(249,115,22,0)',
-                  '0 0 30px 10px rgba(249,115,22,0.3)',
-                  '0 0 0 0 rgba(249,115,22,0)',
-                ]
-              }}
-              transition={{ duration: 2, delay: 3, repeat: Infinity }}
-            />
-
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-8 text-orange-500 relative inline-block"
+              className="text-3xl md:text-4xl font-bold mb-8 text-orange-500"
+              style={{
+                y: useTransform(scrollYProgress, [0.3, 0.5], [30, 0]),
+              }}
             >
-              <span className="relative z-10">In a Nutshell</span>
-              
-              {/* Animated underline */}
-              <motion.div
-                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-transparent"
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ delay: 3, duration: 0.8 }}
-              />
+              In a Nutshell
             </motion.h2>
 
             {/* Text content */}
             <motion.div
-              className="relative p-6 rounded-xl overflow-hidden bg-zinc-800/50 border border-orange-500/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 3, duration: 0.8 }}
+              className="relative p-6 rounded-xl bg-zinc-800/50 border border-orange-500/20"
+              style={{
+                scale: useTransform(scrollYProgress, [0.3, 0.5], [0.9, 1]),
+                y: useTransform(scrollYProgress, [0.3, 0.5], [30, 0]),
+              }}
             >
-              <motion.p 
-                className="text-zinc-300 text-lg leading-relaxed relative"
-              >
+              <motion.p className="text-zinc-300 text-lg leading-relaxed">
                 Senior Software Engineer with{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 3.5, repeat: Infinity }}
-                >
-                  4+ years
-                </motion.span>{' '}
+                <span className="text-orange-500 font-semibold">4+ years</span>{' '}
                 of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. Expert in{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 3.7, repeat: Infinity }}
-                >
-                  Java
-                </motion.span>,{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 3.9, repeat: Infinity }}
-                >
-                  Spring Boot
-                </motion.span>,{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 4.1, repeat: Infinity }}
-                >
-                  Python
-                </motion.span>,{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 4.3, repeat: Infinity }}
-                >
-                  C#
-                </motion.span>, and{' '}
-                <motion.span 
-                  className="text-orange-500 font-semibold inline-block"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, delay: 4.5, repeat: Infinity }}
-                >
-                  React
-                </motion.span>{' '}
+                <span className="text-orange-500 font-semibold">Java</span>,{' '}
+                <span className="text-orange-500 font-semibold">Spring Boot</span>,{' '}
+                <span className="text-orange-500 font-semibold">Python</span>,{' '}
+                <span className="text-orange-500 font-semibold">C#</span>, and{' '}
+                <span className="text-orange-500 font-semibold">React</span>{' '}
                 with deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.
               </motion.p>
-
-              {/* Floating particles */}
-              <div className="absolute inset-0 pointer-events-none">
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-1 h-1 bg-orange-500 rounded-full"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * 100}%`,
-                    }}
-                    animate={{
-                      y: [0, -30, 0],
-                      opacity: [0, 1, 0],
-                      scale: [0, 1.5, 0],
-                    }}
-                    transition={{
-                      duration: 3 + Math.random() * 2,
-                      delay: 3 + Math.random() * 2,
-                      repeat: Infinity,
-                    }}
-                  />
-                ))}
-              </div>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Background flash effect */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-blue-500/10"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0, 0.4, 0],
-          }}
-          transition={{
-            duration: 3,
-            delay: 2,
-            repeat: 1,
-          }}
-        />
-      </motion.section>
+        {/* Scroll indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-orange-500/50 text-sm"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          Scroll to crack open
+        </motion.div>
+      </section>
 
       {/* Experience Section */}
       <motion.section 
@@ -879,9 +734,9 @@ export default function Home() {
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6 bg-zinc-800/30"
+        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -941,9 +796,9 @@ export default function Home() {
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6"
+        className="py-20 px-6 min-h-screen flex items-center"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -980,9 +835,9 @@ export default function Home() {
         initial="initial"
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
-        className="py-20 px-6 bg-zinc-800/30"
+        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -1020,9 +875,9 @@ export default function Home() {
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6"
+        className="py-20 px-6 min-h-screen flex items-center"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -1056,9 +911,9 @@ export default function Home() {
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6 bg-zinc-800/30"
+        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
