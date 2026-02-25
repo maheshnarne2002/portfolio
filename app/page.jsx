@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -11,49 +11,101 @@ export default function Home() {
   const [cursorHover, setCursorHover] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   
+  // Loading and glitch states
+  const [isLoading, setIsLoading] = useState(true);
+  const [glitchText, setGlitchText] = useState('');
+  const [glitchIntensity, setGlitchIntensity] = useState(0);
+  
   // Typing animation states
   const [displayFirstName, setDisplayFirstName] = useState('');
   const [displayLastName, setDisplayLastName] = useState('');
   const [firstNameComplete, setFirstNameComplete] = useState(false);
-  const [showCursor1, setShowCursor1] = useState(true);
+  const [showCursor1, setShowCursor1] = useState(false); // Start false, will enable after glitch
   const [showCursor2, setShowCursor2] = useState(false);
 
   const fullFirstName = 'MAHESH BABU';
   const fullLastName = 'NARNE';
 
+  // Glitch effect on load
   useEffect(() => {
-    // Typing animation for first name
-    let i = 0;
-    const typeFirstName = setInterval(() => {
-      if (i < fullFirstName.length) {
-        setDisplayFirstName(fullFirstName.substring(0, i + 1));
-        i++;
-      } else {
-        clearInterval(typeFirstName);
-        setFirstNameComplete(true);
-        setShowCursor1(false);
-        setShowCursor2(true);
+    const glitchSequence = async () => {
+      // Initial glitch characters
+      const glitchChars = '!<>-_\\/[]{}—=+*^?#________';
+      let counter = 0;
+      
+      // First phase: Random glitch text
+      const glitchInterval = setInterval(() => {
+        let randomStr = '';
+        for (let i = 0; i < 20; i++) {
+          randomStr += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+        }
+        setGlitchText(randomStr);
+        setGlitchIntensity(Math.random());
         
-        // Start typing last name after a short delay
-        setTimeout(() => {
-          let j = 0;
-          const typeLastName = setInterval(() => {
-            if (j < fullLastName.length) {
-              setDisplayLastName(fullLastName.substring(0, j + 1));
-              j++;
+        counter++;
+        if (counter > 15) { // After 15 frames, start resolving
+          clearInterval(glitchInterval);
+          
+          // Second phase: Quick flashes of real text
+          let flashCount = 0;
+          const flashInterval = setInterval(() => {
+            if (flashCount % 2 === 0) {
+              setGlitchText('MAHESH BABU NARNE');
+              setGlitchIntensity(0.8);
             } else {
-              clearInterval(typeLastName);
-              setShowCursor2(false);
+              setGlitchText('➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤');
+              setGlitchIntensity(0.5);
+            }
+            
+            flashCount++;
+            if (flashCount > 5) {
+              clearInterval(flashInterval);
+              
+              // Final: Show real page
+              setTimeout(() => {
+                setIsLoading(false);
+                setShowCursor1(true); // Start typing animation
+              }, 300);
             }
           }, 100);
-        }, 500);
-      }
-    }, 150);
-
-    return () => {
-      clearInterval(typeFirstName);
+        }
+      }, 80);
     };
+
+    glitchSequence();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      // Typing animation for first name
+      let i = 0;
+      const typeFirstName = setInterval(() => {
+        if (i < fullFirstName.length) {
+          setDisplayFirstName(fullFirstName.substring(0, i + 1));
+          i++;
+        } else {
+          clearInterval(typeFirstName);
+          setFirstNameComplete(true);
+          setShowCursor1(false);
+          setShowCursor2(true);
+          
+          // Start typing last name after a short delay
+          setTimeout(() => {
+            let j = 0;
+            const typeLastName = setInterval(() => {
+              if (j < fullLastName.length) {
+                setDisplayLastName(fullLastName.substring(0, j + 1));
+                j++;
+              } else {
+                clearInterval(typeLastName);
+                setShowCursor2(false);
+              }
+            }, 100);
+          }, 500);
+        }
+      }, 150);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     // Mouse move for custom cursor with trail
@@ -208,8 +260,129 @@ export default function Home() {
   return (
     <div ref={containerRef} className="bg-zinc-900 text-zinc-100 min-h-screen">
       
+      {/* Glitch Loading Screen */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-[100] bg-zinc-900 flex items-center justify-center overflow-hidden"
+          >
+            {/* Glitch overlay effects */}
+            <motion.div 
+              className="absolute inset-0"
+              animate={{
+                background: [
+                  'linear-gradient(90deg, transparent 0%, #f97316 0%, transparent 0%)',
+                  'linear-gradient(90deg, transparent 20%, #f97316 20%, transparent 40%)',
+                  'linear-gradient(90deg, transparent 40%, #f97316 40%, transparent 60%)',
+                  'linear-gradient(90deg, transparent 60%, #f97316 60%, transparent 80%)',
+                  'linear-gradient(90deg, transparent 80%, #f97316 80%, transparent 100%)',
+                ]
+              }}
+              transition={{ duration: 0.2, repeat: Infinity }}
+              style={{ opacity: 0.1 }}
+            />
+            
+            {/* RGB split effect */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                x: [-10, 10, -5, 5, 0],
+                filter: [
+                  'blur(2px) hue-rotate(0deg)',
+                  'blur(4px) hue-rotate(90deg)',
+                  'blur(2px) hue-rotate(180deg)',
+                  'blur(4px) hue-rotate(270deg)',
+                  'blur(0px) hue-rotate(360deg)',
+                ]
+              }}
+              transition={{ duration: 0.5, repeat: Infinity }}
+              style={{
+                background: 'radial-gradient(circle at 50% 50%, #f97316, transparent)',
+                opacity: 0.2
+              }}
+            />
+
+            {/* Main glitch text */}
+            <div className="relative text-center">
+              <motion.h1
+                className="text-6xl md:text-8xl font-bold font-mono relative"
+                animate={{
+                  x: [0, -10, 10, -5, 5, 0],
+                  skewX: [0, 10, -10, 5, -5, 0],
+                  textShadow: [
+                    '2px 2px 0 #f97316, -2px -2px 0 #3b82f6',
+                    '-2px 2px 0 #f97316, 2px -2px 0 #3b82f6',
+                    '2px -2px 0 #f97316, -2px 2px 0 #3b82f6',
+                    '-2px -2px 0 #f97316, 2px 2px 0 #3b82f6',
+                    '2px 2px 0 #f97316, -2px -2px 0 #3b82f6',
+                  ]
+                }}
+                transition={{ duration: 0.1, repeat: Infinity }}
+              >
+                {glitchText}
+              </motion.h1>
+              
+              {/* Glitch overlay text */}
+              <motion.h1
+                className="text-6xl md:text-8xl font-bold font-mono absolute top-0 left-0 opacity-50"
+                animate={{
+                  x: [5, -5, 3, -3, 0],
+                  color: ['#f97316', '#3b82f6', '#f97316', '#3b82f6', '#f97316'],
+                  clipPath: [
+                    'inset(0 0 0 0)',
+                    'inset(10% 0 30% 0)',
+                    'inset(30% 0 10% 0)',
+                    'inset(20% 0 20% 0)',
+                    'inset(0 0 0 0)',
+                  ]
+                }}
+                transition={{ duration: 0.2, repeat: Infinity }}
+              >
+                {glitchText}
+              </motion.h1>
+
+              {/* Loading text */}
+              <motion.p
+                className="text-orange-500 mt-8 text-lg font-mono"
+                animate={{
+                  opacity: [1, 0.5, 1],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                ⚡ INITIALIZING SYSTEM ⚡
+              </motion.p>
+
+              {/* Binary rain effect */}
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                {[...Array(10)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute text-orange-500/20 text-xs font-mono whitespace-nowrap"
+                    style={{ left: `${i * 10}%` }}
+                    animate={{
+                      y: ['-100%', '1000%'],
+                    }}
+                    transition={{
+                      duration: 2 + Math.random() * 2,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                  >
+                    {[...Array(20)].map(() => Math.random() > 0.5 ? '1' : '0').join('')}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Custom Trailing Cursor */}
-      {showCursor && (
+      {showCursor && !isLoading && (
         <>
           {/* Main cursor dot */}
           <motion.div 
@@ -272,7 +445,7 @@ export default function Home() {
       <motion.nav 
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
         className="fixed top-0 left-0 right-0 z-40 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800"
       >
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -347,7 +520,7 @@ export default function Home() {
           className="absolute inset-0 opacity-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.2 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1, delay: 1 }}
         >
           <motion.div 
             className="absolute top-20 left-10 w-64 h-64 bg-orange-500 rounded-full filter blur-3xl"
@@ -456,6 +629,7 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* Rest of your sections remain the same... */}
       {/* Experience Section */}
       <motion.section 
         id="experience" 
