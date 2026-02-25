@@ -351,19 +351,22 @@ export default function Home() {
       {showCursor && !isLoading && (
         <>
           <motion.div 
-            className={`cursor-dot ${cursorHover ? 'hover' : ''}`}
+            className="fixed w-2 h-2 bg-orange-500 rounded-full pointer-events-none z-50 mix-blend-difference"
             animate={{
               x: mousePosition.x - 4,
               y: mousePosition.y - 4,
+              scale: cursorHover ? 2 : 1
             }}
             transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
           />
           
           <motion.div 
-            className={`trailing-cursor ${cursorHover ? 'hover' : ''}`}
+            className="fixed w-8 h-8 border-2 border-orange-500 rounded-full pointer-events-none z-40"
             animate={{
-              x: trailPosition.x - 20,
-              y: trailPosition.y - 20,
+              x: trailPosition.x - 16,
+              y: trailPosition.y - 16,
+              scale: cursorHover ? 1.5 : 1,
+              borderColor: cursorHover ? '#ffffff' : '#f97316'
             }}
             transition={{ type: 'spring', stiffness: 200, damping: 30 }}
           />
@@ -560,15 +563,15 @@ export default function Home() {
       <motion.section 
         initial="initial"
         whileInView="animate"
-        viewport={{ once: true, amount: 0.3 }}
-        className="py-20 px-6 border-t border-zinc-800 relative overflow-hidden"
+        viewport={{ once: false, amount: 0.5 }}
+        className="py-20 px-6 border-t border-zinc-800 relative overflow-hidden min-h-[600px] flex items-center"
       >
-        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="max-w-4xl mx-auto relative z-10 w-full">
           {/* Nutshell Animation Container */}
-          <div className="relative mb-12 flex justify-center">
+          <div className="relative mb-16 flex justify-center">
             {/* Breaking Nutshell Animation */}
             <motion.div
-              className="relative w-32 h-32 md:w-40 md:h-40"
+              className="relative w-48 h-48 md:w-64 md:h-64"
               animate="animate"
               initial="initial"
               variants={{
@@ -577,11 +580,11 @@ export default function Home() {
                   rotate: 0
                 },
                 animate: {
-                  scale: [1, 1.2, 0],
-                  rotate: [0, 360, 720],
+                  scale: [1, 1.3, 0],
+                  rotate: [0, 720, 1080],
                   transition: {
-                    duration: 2,
-                    times: [0, 0.3, 1],
+                    duration: 2.5,
+                    times: [0, 0.4, 1],
                     ease: "easeInOut"
                   }
                 }
@@ -589,74 +592,78 @@ export default function Home() {
             >
               {/* Nut Shell - Top */}
               <motion.div
-                className="absolute top-0 left-0 w-full h-1/2 bg-amber-800 rounded-t-[50%] border-4 border-amber-900 origin-bottom"
+                className="absolute top-0 left-0 w-full h-1/2 bg-amber-700 rounded-t-[50%] border-4 border-amber-900 origin-bottom shadow-xl"
                 variants={{
                   initial: { rotateX: 0, opacity: 1 },
                   animate: { 
                     rotateX: 180,
                     opacity: 0,
-                    y: -50,
-                    transition: { delay: 0.8, duration: 0.5 }
+                    y: -100,
+                    transition: { delay: 1, duration: 0.6 }
                   }
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-700 to-amber-900 rounded-t-[50%]">
-                  <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-600 rounded-full" />
-                  <div className="absolute top-1/2 right-1/3 w-3 h-3 bg-amber-600 rounded-full" />
-                  <div className="absolute bottom-1/4 left-1/3 w-2 h-2 bg-amber-600 rounded-full" />
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-[50%]">
+                  <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-amber-500 rounded-full" />
+                  <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-amber-500 rounded-full" />
+                  <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-amber-500 rounded-full" />
+                  <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-amber-500 rounded-full" />
                 </div>
               </motion.div>
 
               {/* Nut Shell - Bottom */}
               <motion.div
-                className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-800 rounded-b-[50%] border-4 border-amber-900 origin-top"
+                className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-700 rounded-b-[50%] border-4 border-amber-900 origin-top shadow-xl"
                 variants={{
                   initial: { rotateX: 0, opacity: 1 },
                   animate: { 
                     rotateX: -180,
                     opacity: 0,
-                    y: 50,
-                    transition: { delay: 0.8, duration: 0.5 }
+                    y: 100,
+                    transition: { delay: 1, duration: 0.6 }
                   }
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-amber-700 to-amber-900 rounded-b-[50%]">
-                  <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-amber-600 rounded-full" />
-                  <div className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-amber-600 rounded-full" />
+                <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-amber-800 rounded-b-[50%]">
+                  <div className="absolute top-1/4 left-1/2 w-3 h-3 bg-amber-500 rounded-full" />
+                  <div className="absolute bottom-1/3 right-1/4 w-4 h-4 bg-amber-500 rounded-full" />
+                  <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-amber-500 rounded-full" />
                 </div>
               </motion.div>
 
               {/* Nut inside */}
               <motion.div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-600 rounded-full"
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-600 rounded-full shadow-inner"
                 variants={{
                   initial: { scale: 0, opacity: 0 },
                   animate: { 
-                    scale: [0, 1.5, 0],
+                    scale: [0, 1.8, 0],
                     opacity: [0, 1, 0],
-                    transition: { delay: 0.4, duration: 1 }
+                    transition: { delay: 0.5, duration: 1.2 }
                   }
                 }}
-              />
+              >
+                <div className="absolute inset-2 bg-amber-500 rounded-full" />
+              </motion.div>
             </motion.div>
 
-            {/* Flying pieces of content */}
+            {/* Flying pieces - Icons */}
             <div className="absolute inset-0 pointer-events-none">
               {[
-                { icon: '☕', delay: 1.2, x: -100, y: -50, rotate: -45 },
-                { icon: '⚡', delay: 1.3, x: 120, y: -30, rotate: 30 },
-                { icon: '🚀', delay: 1.4, x: -80, y: 60, rotate: 15 },
-                { icon: '💡', delay: 1.5, x: 90, y: 40, rotate: -20 },
-                { icon: '🔧', delay: 1.6, x: -120, y: -20, rotate: 60 },
-                { icon: '📦', delay: 1.7, x: 100, y: -60, rotate: -10 },
+                { icon: '⚛️', delay: 1.3, x: -120, y: -80, rotate: -45 },
+                { icon: '🔥', delay: 1.4, x: 140, y: -60, rotate: 30 },
+                { icon: '🚀', delay: 1.5, x: -100, y: 80, rotate: 15 },
+                { icon: '💡', delay: 1.6, x: 110, y: 70, rotate: -20 },
+                { icon: '⚡', delay: 1.7, x: -140, y: -40, rotate: 60 },
+                { icon: '📦', delay: 1.8, x: 130, y: -90, rotate: -10 },
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  className="absolute left-1/2 top-1/2 text-3xl md:text-4xl"
-                  initial={{ x: -20, y: -20, opacity: 0, scale: 0 }}
+                  className="absolute left-1/2 top-1/2 text-4xl md:text-5xl"
+                  initial={{ x: -32, y: -32, opacity: 0, scale: 0 }}
                   animate={{ 
-                    x: item.x - 20,
-                    y: item.y - 20,
+                    x: item.x - 32,
+                    y: item.y - 32,
                     opacity: [0, 1, 0],
                     scale: [0, 1.5, 0],
                     rotate: [0, item.rotate, item.rotate * 2]
@@ -673,35 +680,30 @@ export default function Home() {
             </div>
 
             {/* Flying text fragments */}
-            <motion.div
-              className="absolute left-1/2 top-1/2 pointer-events-none"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.8 }}
-            >
+            <div className="absolute inset-0 pointer-events-none">
               {[
-                'Java', 'React', 'Cloud', 'Scale', 'Innovate',
-                '4+ years', 'Expert', 'Full-Stack', 'Distributed'
+                'Java', 'React', 'Cloud', 'Scale', '4+ Years',
+                'Expert', 'Full-Stack', 'Distributed', 'Innovation'
               ].map((text, i) => {
                 const angle = (i * 40) * (Math.PI / 180);
-                const radius = 150;
+                const radius = 200;
                 const x = Math.cos(angle) * radius;
                 const y = Math.sin(angle) * radius;
                 
                 return (
                   <motion.span
                     key={i}
-                    className="absolute text-orange-500 text-sm font-bold whitespace-nowrap"
+                    className="absolute text-orange-500 text-sm md:text-base font-bold whitespace-nowrap"
                     initial={{ x: -20, y: -20, opacity: 0, scale: 0 }}
                     animate={{ 
                       x: x - 20,
                       y: y - 20,
                       opacity: [0, 1, 0],
-                      scale: [0, 1, 0.5],
+                      scale: [0, 1.2, 0],
                     }}
                     transition={{ 
                       delay: 2.0 + (i * 0.1),
-                      duration: 1.5,
+                      duration: 1.8,
                       ease: "easeOut"
                     }}
                   >
@@ -709,18 +711,30 @@ export default function Home() {
                   </motion.span>
                 );
               })}
+            </div>
+
+            {/* Explosion effect */}
+            <motion.div
+              className="absolute left-1/2 top-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ 
+                opacity: [0, 0.8, 0],
+                scale: [0, 2, 3],
+              }}
+              transition={{ delay: 1.2, duration: 1 }}
+            >
+              <div className="w-full h-full bg-orange-500 rounded-full blur-xl" />
             </motion.div>
           </div>
 
           {/* Content that appears after nutshell breaks */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 2.5, duration: 0.8 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.8, duration: 0.8 }}
             className="relative"
           >
-            {/* Sparkle effects around the text */}
+            {/* Sparkle effects */}
             <motion.div
               className="absolute -inset-4 pointer-events-none"
               animate={{
@@ -747,98 +761,113 @@ export default function Home() {
               />
             </motion.h2>
 
-            {/* Text with animated gradient background */}
+            {/* Text content */}
             <motion.div
-              className="relative p-6 rounded-xl overflow-hidden"
-              initial={{ background: 'transparent' }}
-              animate={{
-                background: [
-                  'linear-gradient(45deg, transparent, transparent)',
-                  'linear-gradient(45deg, rgba(249,115,22,0.1), transparent, rgba(59,130,246,0.1))',
-                  'linear-gradient(45deg, transparent, transparent)',
-                ]
-              }}
-              transition={{ duration: 3, delay: 3.2, repeat: Infinity }}
+              className="relative p-6 rounded-xl overflow-hidden bg-zinc-800/50 border border-orange-500/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 3, duration: 0.8 }}
             >
               <motion.p 
                 className="text-zinc-300 text-lg leading-relaxed relative"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.8, duration: 1 }}
               >
-                {/* Animated words */}
-                {[
-                  'Senior Software Engineer with ', 
-                  '4+ years', 
-                  ' of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. Expert in ', 
-                  'Java', ', ', 'Spring Boot', ', ', 'Python', ', ', 'C#', ', and ', 'React', 
-                  ' with deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.'
-                ].map((part, i) => {
-                  if (['4+ years', 'Java', 'Spring Boot', 'Python', 'C#', 'React'].includes(part.trim())) {
-                    return (
-                      <motion.span
-                        key={i}
-                        className="text-orange-500 font-semibold inline-block"
-                        animate={{
-                          scale: [1, 1.1, 1],
-                          color: ['#f97316', '#fb923c', '#f97316']
-                        }}
-                        transition={{ 
-                          duration: 2,
-                          delay: 3.5 + (i * 0.2),
-                          repeat: Infinity,
-                          repeatDelay: 3
-                        }}
-                      >
-                        {part}
-                      </motion.span>
-                    );
-                  }
-                  return <span key={i}>{part}</span>;
-                })}
+                Senior Software Engineer with{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 3.5, repeat: Infinity }}
+                >
+                  4+ years
+                </motion.span>{' '}
+                of experience designing and delivering scalable, high‑performance full‑stack applications and distributed systems. Expert in{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 3.7, repeat: Infinity }}
+                >
+                  Java
+                </motion.span>,{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 3.9, repeat: Infinity }}
+                >
+                  Spring Boot
+                </motion.span>,{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 4.1, repeat: Infinity }}
+                >
+                  Python
+                </motion.span>,{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 4.3, repeat: Infinity }}
+                >
+                  C#
+                </motion.span>, and{' '}
+                <motion.span 
+                  className="text-orange-500 font-semibold inline-block"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, delay: 4.5, repeat: Infinity }}
+                >
+                  React
+                </motion.span>{' '}
+                with deep expertise in cloud‑native architectures, microservices, and RESTful APIs. Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.
               </motion.p>
 
-              {/* Floating tech icons */}
+              {/* Floating particles */}
               <div className="absolute inset-0 pointer-events-none">
-                {['⚛️', '🐍', '☕', '🐳', '☁️', '📊'].map((icon, i) => {
-                  const x = Math.random() * 100;
-                  const y = Math.random() * 100;
-                  return (
-                    <motion.div
-                      key={i}
-                      className="absolute text-2xl opacity-10"
-                      style={{ left: `${x}%`, top: `${y}%` }}
-                      animate={{
-                        y: [0, -20, 0],
-                        rotate: [0, 360],
-                        opacity: [0.1, 0.3, 0.1]
-                      }}
-                      transition={{
-                        duration: 10 + i,
-                        repeat: Infinity,
-                        delay: i * 2
-                      }}
-                    >
-                      {icon}
-                    </motion.div>
-                  );
-                })}
+                {[...Array(8)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-orange-500 rounded-full"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                    }}
+                    animate={{
+                      y: [0, -30, 0],
+                      opacity: [0, 1, 0],
+                      scale: [0, 1.5, 0],
+                    }}
+                    transition={{
+                      duration: 3 + Math.random() * 2,
+                      delay: 3 + Math.random() * 2,
+                      repeat: Infinity,
+                    }}
+                  />
+                ))}
               </div>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Background effect */}
+        {/* Background flash effect */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-blue-500/5"
+          className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-blue-500/10"
           animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0, 0.3, 0],
+            scale: [1, 1.2, 1],
+            opacity: [0, 0.4, 0],
           }}
           transition={{
-            duration: 4,
-            delay: 2.5,
-            repeat: Infinity,
+            duration: 3,
+            delay: 2,
+            repeat: 1,
           }}
         />
       </motion.section>
@@ -865,7 +894,7 @@ export default function Home() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                whileHover={{ y: -5 }}
                 onMouseEnter={() => setCursorHover(true)}
                 onMouseLeave={() => setCursorHover(false)}
                 className="bg-zinc-800 rounded-lg p-6 hover:border-orange-500 border border-transparent transition-all cursor-pointer"
@@ -975,9 +1004,8 @@ export default function Home() {
                   scale: 1.1,
                   backgroundColor: '#f97316',
                   color: 'white',
-                  transition: { duration: 0.2 }
                 }}
-                className="px-4 py-2 bg-zinc-800 rounded-full text-zinc-300 border border-zinc-700 cursor-default"
+                className="px-4 py-2 bg-zinc-800 rounded-full text-zinc-300 border border-zinc-700 cursor-default transition-colors"
               >
                 {skill}
               </motion.span>
@@ -1011,7 +1039,6 @@ export default function Home() {
                 onMouseLeave={() => setCursorHover(false)}
                 whileHover={{ 
                   scale: 1.05,
-                  rotateY: 5,
                   boxShadow: '0 10px 30px -10px rgba(249, 115, 22, 0.3)'
                 }}
                 className="bg-zinc-800 rounded-lg p-6 text-center border border-zinc-700 hover:border-orange-500 transition-all cursor-pointer"
