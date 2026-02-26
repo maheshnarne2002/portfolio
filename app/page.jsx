@@ -587,12 +587,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Summary with Elegant Reveal Animation - Full Viewport Height */}
+      {/* Professional Summary with Nutshell Opening Sticker */}
       <section 
         ref={nutshellRef}
         className="h-screen flex items-center justify-center px-6 border-t border-zinc-800 relative overflow-hidden"
       >
         <div className="max-w-4xl mx-auto relative z-10 w-full">
+          {/* Nutshell Opening Sticker */}
+          <motion.div 
+            className="absolute -top-20 -right-20 w-48 h-48 md:w-64 md:h-64 z-20"
+            style={{
+              opacity: useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]),
+              scale: useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.5, 1.2, 1.2, 0.5]),
+              rotate: useTransform(scrollYProgress, [0, 0.5, 1], [0, 360, 720]),
+            }}
+          >
+            {/* Animated nutshell */}
+            <div className="relative w-full h-full">
+              {/* Top shell */}
+              <motion.div
+                className="absolute top-0 left-0 w-full h-1/2 bg-amber-700 rounded-t-[50%] border-4 border-amber-900 origin-bottom shadow-xl"
+                style={{
+                  rotateX: useTransform(scrollYProgress, [0.2, 0.5], [0, 180]),
+                  y: useTransform(scrollYProgress, [0.2, 0.5], [0, -30]),
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-[50%]">
+                  <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-500 rounded-full" />
+                  <div className="absolute top-1/2 right-1/3 w-3 h-3 bg-amber-500 rounded-full" />
+                </div>
+              </motion.div>
+
+              {/* Bottom shell */}
+              <motion.div
+                className="absolute bottom-0 left-0 w-full h-1/2 bg-amber-700 rounded-b-[50%] border-4 border-amber-900 origin-top shadow-xl"
+                style={{
+                  rotateX: useTransform(scrollYProgress, [0.2, 0.5], [0, -180]),
+                  y: useTransform(scrollYProgress, [0.2, 0.5], [0, 30]),
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-amber-600 to-amber-800 rounded-b-[50%]">
+                  <div className="absolute bottom-1/4 left-1/2 w-2 h-2 bg-amber-500 rounded-full" />
+                </div>
+              </motion.div>
+
+              {/* Nut inside - appears when open */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-amber-600 rounded-full shadow-inner"
+                style={{
+                  scale: useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, 1, 0]),
+                  opacity: useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, 1, 0]),
+                }}
+              >
+                <div className="absolute inset-2 bg-amber-500 rounded-full" />
+              </motion.div>
+
+              {/* Sparkles */}
+              {[...Array(4)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 bg-yellow-300 rounded-full"
+                  style={{
+                    left: `${20 + i * 20}%`,
+                    top: `${20 + i * 20}%`,
+                  }}
+                  animate={{
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                  }}
+                />
+              ))}
+            </div>
+          </motion.div>
+
           {/* Decorative animated circles */}
           <motion.div
             className="absolute -top-40 -left-40 w-80 h-80 border-2 border-orange-500/10 rounded-full"
@@ -677,25 +749,6 @@ export default function Home() {
                   Proven track record of leading technical initiatives, mentoring engineering teams, and optimizing system performance. Passionate about building reliable, observable, and impactful software solutions across the entire technology stack.
                 </span>
               </motion.p>
-
-              {/* Tech stack tags */}
-              <motion.div 
-                className="flex flex-wrap gap-2 mt-6 justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                {['Java', 'Spring', 'React', 'AWS', 'Python', 'Docker'].map((tech, i) => (
-                  <motion.span
-                    key={i}
-                    className="px-3 py-1 bg-zinc-700/50 text-orange-500 text-sm rounded-full border border-orange-500/20"
-                    whileHover={{ scale: 1.1, backgroundColor: '#f97316', color: 'white' }}
-                    transition={{ type: 'spring', stiffness: 400 }}
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
-              </motion.div>
             </div>
           </motion.div>
 
@@ -718,16 +771,108 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Experience Section */}
+      {/* Experience Section with Developer Working Sticker */}
       <motion.section 
         id="experience" 
         initial="initial"
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center"
+        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center relative overflow-hidden"
       >
-        <div className="max-w-4xl mx-auto w-full">
+        {/* Developer Working Sticker */}
+        <motion.div 
+          className="absolute -left-20 top-1/2 transform -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 z-20"
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <div className="relative w-full h-full">
+            {/* Computer screen */}
+            <motion.div 
+              className="absolute inset-0 bg-zinc-800 rounded-xl border-4 border-zinc-600 shadow-2xl overflow-hidden"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              {/* Screen glow */}
+              <motion.div 
+                className="absolute inset-1 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg"
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              
+              {/* Code lines */}
+              <div className="absolute top-4 left-3 space-y-2">
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="h-1 bg-orange-500/50 rounded"
+                    style={{ width: `${60 - i * 10}%` }}
+                    animate={{ width: [`${60 - i * 10}%`, `${80 - i * 10}%`, `${60 - i * 10}%`] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                ))}
+              </div>
+
+              {/* Blinking cursor */}
+              <motion.div 
+                className="absolute bottom-4 right-4 w-3 h-5 bg-orange-500"
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
+
+              {/* Coffee cup */}
+              <motion.div 
+                className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-700 rounded-t-lg"
+                animate={{ rotate: [0, 5, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <div className="absolute -top-2 left-1 w-2 h-3 bg-amber-600 rounded-t-full" />
+                <motion.div 
+                  className="absolute -top-4 left-2 w-1 h-2 bg-amber-500/30"
+                  animate={{ height: [2, 4, 2] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                />
+              </motion.div>
+            </motion.div>
+
+            {/* Head */}
+            <motion.div 
+              className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-zinc-700 rounded-full border-4 border-zinc-600"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              {/* Eyes */}
+              <motion.div 
+                className="absolute top-4 left-3 w-3 h-3 bg-white rounded-full"
+                animate={{ scaleY: [1, 0.1, 1] }}
+                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 3 }}
+              />
+              <motion.div 
+                className="absolute top-4 right-3 w-3 h-3 bg-white rounded-full"
+                animate={{ scaleY: [1, 0.1, 1] }}
+                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 3 }}
+              />
+              {/* Glasses */}
+              <div className="absolute top-3 left-1 w-5 h-5 border-2 border-zinc-400 rounded-full" />
+              <div className="absolute top-3 right-1 w-5 h-5 border-2 border-zinc-400 rounded-full" />
+              <div className="absolute top-4 left-5 w-4 h-0.5 bg-zinc-400" />
+            </motion.div>
+
+            {/* Thought bubble */}
+            <motion.div 
+              className="absolute -top-24 -right-10 bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <span className="text-orange-500 text-sm whitespace-nowrap">⌨️ Coding...</span>
+              <div className="absolute -bottom-2 right-4 w-3 h-3 bg-white/10 backdrop-blur-sm rotate-45" />
+            </motion.div>
+          </div>
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto w-full pl-24 md:pl-32">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -787,9 +932,68 @@ export default function Home() {
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
         variants={staggerChildren}
-        className="py-20 px-6 min-h-screen flex items-center"
+        className="py-20 px-6 min-h-screen flex items-center relative overflow-hidden"
       >
-        <div className="max-w-4xl mx-auto w-full">
+        {/* Trophy/Achievement Sticker */}
+        <motion.div 
+          className="absolute -right-20 top-1/2 transform -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 z-20"
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <div className="relative w-full h-full">
+            {/* Trophy */}
+            <motion.div 
+              className="absolute inset-0"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              {/* Trophy body */}
+              <div className="absolute bottom-1/2 left-1/2 transform -translate-x-1/2 w-24 h-20 bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-t-full" />
+              
+              {/* Trophy handles */}
+              <div className="absolute bottom-1/2 left-1/2 transform -translate-x-16 w-6 h-12 bg-yellow-600 rounded-full" />
+              <div className="absolute bottom-1/2 left-1/2 transform translate-x-10 w-6 h-12 bg-yellow-600 rounded-full" />
+              
+              {/* Trophy base */}
+              <div className="absolute bottom-1/2 left-1/2 transform -translate-x-1/2 translate-y-16 w-16 h-4 bg-yellow-700 rounded" />
+              <div className="absolute bottom-1/2 left-1/2 transform -translate-x-1/2 translate-y-20 w-24 h-3 bg-yellow-800 rounded" />
+
+              {/* Star on top */}
+              <motion.div 
+                className="absolute bottom-1/2 left-1/2 transform -translate-x-1/2 -translate-y-16 text-3xl"
+                animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                transition={{ duration: 4, repeat: Infinity }}
+              >
+                ⭐
+              </motion.div>
+            </motion.div>
+
+            {/* Sparkles */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-yellow-300 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  scale: [0, 1.5, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto w-full pr-24 md:pr-32">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
@@ -820,15 +1024,94 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Skills Section */}
+      {/* Skills Section with Tech Stack Sticker */}
       <motion.section 
         id="skills" 
         initial="initial"
         whileInView="animate"
         viewport={{ once: true, amount: 0.2 }}
-        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center"
+        className="py-20 px-6 bg-zinc-800/30 min-h-screen flex items-center relative overflow-hidden"
       >
-        <div className="max-w-4xl mx-auto w-full">
+        {/* Tech Stack Sticker */}
+        <motion.div 
+          className="absolute -left-20 top-1/2 transform -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 z-20"
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <div className="relative w-full h-full">
+            {/* Gears */}
+            <motion.div 
+              className="absolute top-1/4 left-1/4 w-16 h-16"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-full h-full bg-orange-500/20 rounded-full border-4 border-orange-500/50">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute top-1/2 left-1/2 w-6 h-2 bg-orange-500/50"
+                    style={{
+                      transform: `translate(-50%, -50%) rotate(${i * 45}deg)`,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="absolute bottom-1/4 right-1/4 w-12 h-12"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-full h-full bg-blue-500/20 rounded-full border-4 border-blue-500/50">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute top-1/2 left-1/2 w-4 h-2 bg-blue-500/50"
+                    style={{
+                      transform: `translate(-50%, -50%) rotate(${i * 60}deg)`,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-purple-500/20 rounded-full"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className="absolute inset-0 border-2 border-purple-500/50 rounded-full" />
+            </motion.div>
+
+            {/* Floating tech icons */}
+            {['⚛️', '🐍', '☕', '🐳'].map((icon, i) => (
+              <motion.div
+                key={i}
+                className="absolute text-2xl"
+                style={{
+                  left: `${20 + i * 20}%`,
+                  top: `${20 + i * 15}%`,
+                }}
+                animate={{
+                  y: [0, -10, 0],
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: i * 0.3,
+                }}
+              >
+                {icon}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto w-full pl-24 md:pl-32">
           <motion.h2 
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold mb-12 text-orange-500 text-center"
