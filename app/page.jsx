@@ -672,7 +672,7 @@ export default function Home() {
               </h2>
             </div>
             <div className="gradient-border shimmer" style={{ background:SURFACE, borderRadius:20, padding:'36px 40px', position:'relative', overflow:'hidden' }}>
-              <RocketSticker />
+              <StickerRocket />
               <div style={{ position:'absolute', top:-50, right:-50, width:180, height:180, borderRadius:'50%', background:'radial-gradient(circle,rgba(56,189,248,0.04),transparent)', pointerEvents:'none' }} />
               <p style={{ fontSize:16, lineHeight:1.82, color:'#64748b' }}>
                 <span style={{ display:'block', fontFamily:'Syne,sans-serif', fontWeight:700, fontSize:20, color:'#e2e8f0', marginBottom:14 }}>Senior Software Engineer</span>
