@@ -1,6 +1,5 @@
 import './globals.css'
-import { Analytics } from '@vercel/analytics/next'
-import { IBM_Plex_Sans, IBM_Plex_Mono, Newsreader } from 'next/font/google'
+import { IBM_Plex_Sans, IBM_Plex_Mono, Lora } from 'next/font/google'
 
 const plexSans = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -16,7 +15,7 @@ const plexMono = IBM_Plex_Mono({
   display: 'swap',
 })
 
-const newsreader = Newsreader({
+const serif = Lora({
   subsets: ['latin'],
   weight: ['400'],
   style: ['normal', 'italic'],
@@ -34,11 +33,10 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexMono.variable} ${newsreader.variable}`}
+      className={`${plexSans.variable} ${plexMono.variable} ${serif.variable}`}
     >
       <body>
         {children}
-        <Analytics />
       </body>
     </html>
   )
