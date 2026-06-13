@@ -40,13 +40,13 @@ const SPANS = [
     width: 32.6,
     active: true,
     bullets: [
-      'Build and operate high scale Java backend services for a consumer communications platform delivering email, SMS, and push to millions of daily users owned end to end through deployment, monitoring, and on-call.',
-      'Design REST and GraphQL APIs consumed by multiple product teams, investing in schema stability and backward compatibility so downstream teams ship independently.',
-      'Build React and TypeScript interfaces for internal tooling and consumer facing notification preferences, working closely with product and design.',
-      'Develop Kafka event pipelines for real time delivery and engagement tracking, with partition strategy and consumer group isolation that keeps latency predictable under peak load.',
-      'Integrate ML outputs and LLM powered features into production Java services, handling inference latency and partial failures gracefully without degrading the core experience.',
+      'Built and operated high scale Java backend services for a consumer communications platform delivering email, SMS, and push to millions of daily users owned end to end through deployment, monitoring, and on-call.',
+      'Designed REST and GraphQL APIs consumed by multiple product teams, investing in schema stability and backward compatibility so downstream teams ship independently.',
+      'Built React and TypeScript interfaces for internal tooling and consumer facing notification preferences, working closely with product and design.',
+      'Developed Kafka event pipelines for real time delivery and engagement tracking, with partition strategy and consumer group isolation that keeps latency predictable under peak load.',
+      'Integrated ML outputs and LLM powered features into production Java services, handling inference latency and partial failures gracefully without degrading the core experience.',
       'Built observability on Prometheus, Grafana, and OpenTelemetry structured around SLOs and real failure categories actionable signals, not metric noise.',
-      'Found and fixed a message-routing bottleneck that cut p99 latency 35% and improved throughput 50%, after profiling revealed the actual slow path.',
+      'Found and fixed a message routing bottleneck that cut p99 latency 35% and improved throughput 50%, after profiling revealed the actual slow path.',
       'Mentored two engineers through complex platform features, helping them reason through failure modes before production did.',
     ],
   },
@@ -64,7 +64,7 @@ const LOG_LINES = [
 ];
 
 const METRICS = [
-  { value: ['−35', '%'], label: 'p99 latency on the message-routing path, after profiling the real slow path' },
+  { value: ['−35', '%'], label: 'p99 latency on the message routing path, after profiling the real slow path' },
   { value: ['+50', '%'], label: 'throughput on that same path once the bottleneck was gone' },
   { value: ['−65', '%'], label: 'mean time to detection, via SLO driven alerting on real failure categories' },
   { value: ['−45', '%'], label: 'mean time to resolution on a production distributed system' },
