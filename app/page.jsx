@@ -178,7 +178,7 @@ export default function Home() {
           <Reveal delay={0.16}>
             <p className="prose-lg muted" style={{ marginTop: 28 }}>
               Four-plus years building scalable distributed backend systems in Java,
-              Python, and TypeScript across communications and healthcare. Currently a
+              Python, and TypeScript across communications and healthcare platforms. Currently a
               Senior Software Engineer at Apple, where the platform I work on delivers
               email, SMS, and push to millions of daily users without raising its voice.
             </p>
@@ -399,7 +399,7 @@ export default function Home() {
               </a>
             </div>
             <p className="mono muted" style={{ marginTop: 24, fontSize: 13 }}>
-              Open to relocation
+              open to relocation · listening on :new-roles (actively interveiwing)
             </p>
           </Reveal>
         </Section>
