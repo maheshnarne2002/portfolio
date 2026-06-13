@@ -24,9 +24,9 @@ const serif = Lora({
 })
 
 export const metadata = {
-  title: 'Mahesh Babu Narne | Software Engineer',
+  title: 'Mahesh Babu Narne | Senior Software Engineer',
   description:
-    'Software engineer building fast, observable distributed systems — Java, Spring Boot, React, and cloud-native architectures.',
+    'Senior software engineer building scalable distributed backend systems — Java, Python, TypeScript, Kafka, and cloud-native architectures across communications and healthcare.',
 }
 
 export default function RootLayout({ children }) {

@@ -14,15 +14,18 @@ const SPANS = [
     period: 'Mar 2021 — Nov 2023',
     duration: '2y 9m',
     location: 'Hyderabad, India',
+    project: 'SmartHealth360 · multi-tenant healthcare platform',
     left: 2.8,
     width: 44.4,
     active: false,
     bullets: [
-      'Built full-stack enterprise applications with React, Java, Spring Boot, and PostgreSQL, scaling to 100K+ concurrent users.',
-      'Designed RESTful APIs and microservices in Python and C# for business-critical data.',
-      'Shipped real-time Kafka pipelines processing millions of events daily.',
-      'Containerized services with Docker and automated CI/CD with Jenkins and GitHub Actions — deployment time down 70%.',
-      'Held the line on quality: JUnit, Mockito, and Jest with 85% coverage; mentored junior developers along the way.',
+      'Built Java and Spring Boot services for SmartHealth360, a multi-tenant healthcare platform on AWS, where data correctness and compliance shaped architecture from day one.',
+      'Designed REST APIs and data models for patient facing and clinical workflows, translating requirements with product owners and clinical stakeholders.',
+      'Developed Kafka event pipelines processing millions of clinical and operational events per day, with partition and consumer group design that held ordering under variable load.',
+      'Tuned PostgreSQL and MongoDB schemas plus Redis caching for multi tenant workloads, keeping query performance predictable as data and concurrency scaled.',
+      'Built React components for clinical management workflows across the full stack correct for real healthcare scenarios, not just acceptance criteria.',
+      'Traced on call incidents through distributed logs and metrics to root cause, cutting recurring incidents 40% over a year.',
+      'Coordinated 10+ quarterly releases in Agile squads learning that aligning on interface contracts before implementation mattered more than the execution itself.',
     ],
   },
   {
@@ -32,15 +35,19 @@ const SPANS = [
     period: 'Jul 2024 — present',
     duration: 'ongoing',
     location: 'United States',
+    project: 'consumer communications platform · email, SMS, push',
     left: 58.3,
     width: 32.6,
     active: true,
     bullets: [
-      'Design and ship full-stack systems in React, TypeScript, Java, and Spring Boot serving millions of daily requests at sub-100ms latency.',
-      'Architect event-driven microservices in Python and C#, integrated with Kafka for real-time analytics.',
-      'Cut response times 45% through schema design, indexing, and query tuning in PostgreSQL and MongoDB.',
-      'Built monitoring and alerting on Prometheus and Grafana — mean time to detection down 60%.',
-      'Lead code reviews, set coding standards, and mentor engineers; on-call for systems holding 99.99% availability.',
+      'Build and operate high scale Java backend services for a consumer communications platform delivering email, SMS, and push to millions of daily users owned end to end through deployment, monitoring, and on-call.',
+      'Design REST and GraphQL APIs consumed by multiple product teams, investing in schema stability and backward compatibility so downstream teams ship independently.',
+      'Build React and TypeScript interfaces for internal tooling and consumer facing notification preferences, working closely with product and design.',
+      'Develop Kafka event pipelines for real time delivery and engagement tracking, with partition strategy and consumer group isolation that keeps latency predictable under peak load.',
+      'Integrate ML outputs and LLM powered features into production Java services, handling inference latency and partial failures gracefully without degrading the core experience.',
+      'Built observability on Prometheus, Grafana, and OpenTelemetry structured around SLOs and real failure categories actionable signals, not metric noise.',
+      'Found and fixed a message-routing bottleneck that cut p99 latency 35% and improved throughput 50%, after profiling revealed the actual slow path.',
+      'Mentored two engineers through complex platform features, helping them reason through failure modes before production did.',
     ],
   },
 ];
@@ -48,44 +55,43 @@ const SPANS = [
 const YEARS = [2021, 2022, 2023, 2024, 2025, 2026];
 
 const LOG_LINES = [
-  'p99 latency 92ms — within budget',
-  'uptime 99.99% over trailing 365d',
-  'mttd −60% after alerting rewrite',
-  'api response −65% via redis caching',
-  'deploy time −70% — ci/cd overhaul',
+  'p99 latency −35% after routing fix',
+  'throughput +50% on message path',
+  'mttd −65% — slo-driven alerting',
+  'mttr −45% — runbooks that match reality',
+  'on-call response −60% this quarter',
   '0 paged engineers tonight. good.',
 ];
 
 const METRICS = [
-  { value: '200K+', label: 'daily transactions on a platform architected end to end' },
-  { value: '99.99%', label: 'production uptime, held through on-call rotations' },
-  { value: ['−65', '%'], label: 'API response time, after Redis caching and query work' },
-  { value: ['−60', '%'], label: 'mean time to detection, via tracing and alerting' },
-  { value: ['−30', '%'], label: 'infrastructure cost from the same optimization pass' },
-  { value: '5 → mid', label: 'junior engineers mentored into mid-level roles' },
+  { value: ['−35', '%'], label: 'p99 latency on the message-routing path, after profiling the real slow path' },
+  { value: ['+50', '%'], label: 'throughput on that same path once the bottleneck was gone' },
+  { value: ['−65', '%'], label: 'mean time to detection, via SLO driven alerting on real failure categories' },
+  { value: ['−45', '%'], label: 'mean time to resolution on a production distributed system' },
+  { value: ['−60', '%'], label: 'on call response time, from runbooks grounded in how the system actually fails' },
+  { value: '3 teams', label: 'adopted the backend platform within two quarters no structural rewrites' },
 ];
 
 const STACK = [
-  { layer: 'interface', items: 'React · Next.js · TypeScript · Redux · Tailwind CSS' },
-  { layer: 'services', items: 'Java · Spring Boot · Python · C# / .NET · Node.js · Go · GraphQL' },
-  { layer: 'data', items: 'PostgreSQL · MongoDB · Redis · Cassandra · MySQL' },
-  { layer: 'messaging', items: 'Kafka · RabbitMQ · event-driven architecture' },
-  { layer: 'infrastructure', items: 'AWS · Azure · Docker · Kubernetes · Terraform · GitHub Actions' },
-  { layer: 'observability', items: 'Prometheus · Grafana · ELK · distributed tracing' },
-  { layer: 'quality', items: 'JUnit · Mockito · Jest · React Testing Library · Selenium' },
+  { layer: 'interface', items: 'React · Angular · TypeScript · component architecture' },
+  { layer: 'services', items: 'Java · Spring Boot · Python · Kotlin · C# · REST · GraphQL · gRPC' },
+  { layer: 'data', items: 'PostgreSQL · MySQL · MongoDB · DynamoDB · Redis · Elasticsearch' },
+  { layer: 'messaging', items: 'Apache Kafka · SQS · event-driven pipelines · async processing' },
+  { layer: 'infrastructure', items: 'AWS · Azure · GCP · Kubernetes · Docker · Terraform · CI/CD' },
+  { layer: 'observability', items: 'Prometheus · Grafana · OpenTelemetry · distributed tracing · SLOs' },
+  { layer: 'ai / automation', items: 'LLM integration · agentic workflows · ML feature integration · Claude Code' },
 ];
 
 const CERTS = [
+  { name: 'Microsoft Azure Solutions Architect', tag: 'expert' },
+  { name: 'Microsoft DevOps Engineer', tag: 'expert' },
   { name: 'AWS Certified Solutions Architect', tag: 'associate' },
-  { name: 'Microsoft Azure Developer', tag: 'associate' },
-  { name: 'Oracle Java SE 11 Developer', tag: 'professional' },
   { name: 'Certified Kubernetes Administrator', tag: 'cka' },
-  { name: 'Meta Front-End Developer', tag: 'professional cert' },
 ];
 
 const EDUCATION = [
   { name: 'M.S. — University of Central Missouri', tag: 'warrensburg, mo' },
-  { name: 'B.Tech — GITAM University', tag: 'andhra pradesh, in' },
+  { name: 'B.Tech — GITAM University', tag: 'andhra pradesh, india' },
 ];
 
 /* ── Small helpers ───────────────────────────── */
@@ -158,7 +164,7 @@ export default function Home() {
         <header className="shell" style={{ padding: '170px 24px 96px' }}>
           <Reveal>
             <p className="section-label" style={{ marginBottom: 28 }}>
-              mahesh babu narne · software engineer
+              mahesh babu narne · senior software engineer · overland park, ks
             </p>
           </Reveal>
           <Reveal delay={0.08}>
@@ -171,9 +177,10 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.16}>
             <p className="prose-lg muted" style={{ marginTop: 28 }}>
-              Four-plus years across Java, Spring Boot, Python, and React — currently a
-              Senior Software Engineer at Apple, where the systems I design handle
-              millions of requests a day without raising their voice.
+              Four-plus years building scalable distributed backend systems in Java,
+              Python, and TypeScript across communications and healthcare. Currently a
+              Senior Software Engineer at Apple, where the platform I work on delivers
+              email, SMS, and push to millions of daily users without raising its voice.
             </p>
           </Reveal>
           <Reveal delay={0.24}>
@@ -246,6 +253,13 @@ export default function Home() {
                 >
                   <span className="role">
                     {s.role} <span className="company">@ {s.company}</span>
+                    <br />
+                    <span
+                      className="mono"
+                      style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 400 }}
+                    >
+                      {s.project}
+                    </span>
                   </span>
                   <span className="period">
                     {s.period} · {s.location}
@@ -373,14 +387,20 @@ export default function Home() {
               <a href="mailto:narnemaheshbabu11@gmail.com" className="contact-link">
                 narnemaheshbabu11@gmail.com
               </a>
-              <a href="tel:+19132499980" className="contact-link">
-                +1 913 249 9980
-              </a>
             </div>
             <div style={{ marginTop: 20, display: 'flex', gap: 28 }}>
-              <a href="#" className="contact-link">github ↗</a>
-              <a href="#" className="contact-link">linkedin ↗</a>
+              <a
+                href="https://www.linkedin.com/in/maheshswe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-link"
+              >
+                linkedin ↗
+              </a>
             </div>
+            <p className="mono muted" style={{ marginTop: 24, fontSize: 13 }}>
+              Open to relocation
+            </p>
           </Reveal>
         </Section>
 
